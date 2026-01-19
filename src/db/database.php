@@ -7,8 +7,8 @@ class Database
     private function __construct()
     {
         // Load environment variables
-        if (file_exists(__DIR__ . '/../.env')) {
-            $env = parse_ini_file(__DIR__ . '/../.env');
+        if (file_exists(__DIR__ . '/../../.env')) {
+            $env = parse_ini_file(__DIR__ . '/../../.env');
         } else {
             die('Error: .env file not found.');
         }

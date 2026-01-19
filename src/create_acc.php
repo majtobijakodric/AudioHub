@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/src/database.php';
+require_once __DIR__ . '/db/database.php';
 $db = Database::getInstance();
 $conn = $db->getConnection();
 
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt->affected_rows === 1) {
         // Redirect to login page
-        header('Location: index.php?registered=1');
+        header('Location: ../public/login.php?registered=1');
         exit();
     } else {
         die('Error: Registration failed.');

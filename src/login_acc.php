@@ -2,7 +2,7 @@
 // This allows us to track logged-in users across pages
 session_start();
 
-require_once __DIR__ . '/src/database.php';
+require_once __DIR__ . '/db/database.php';
 $db = Database::getInstance();
 $conn = $db->getConnection();
 
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Successful login
             $_SESSION['user_id'] = $user_id;
             $_SESSION['username'] = $username;
-            header('Location: dashboard.php');
+            header('Location: ../public/dashboard.php');
             exit();
         } else {
             die('Error: Invalid username or password.');
