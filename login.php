@@ -2,33 +2,46 @@
 // This allows us to track logged-in users across pages
 session_start();
 
-// Check if .env file exists and load it
-if (file_exists(__DIR__ . '/.env')) {
-    $env = parse_ini_file(__DIR__ . '/.env');
-} else {
-    die('Error: .env file not found.');
+require_once __DIR__ . '/src/database.php';
+$db = Database::getInstance();
+$conn = $db->getConnection();
+
+// Handle login form submission
+$username = $_POST['username'] ?? '';
+$password = $_POST['password'] ?? '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    if (empty($username) || empty($password)) {
+        die('Error: Username and password are required.');
+    }
+
+    // Prepare and execute the SQL statement to prevent SQL injection
+    // Using plain-text password column for testing
+    $stmt = $conn->prepare('SELECT id, password FROM users WHERE username = ?');
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows === 1) {
+        $stmt->bind_result($user_id, $stored_password);
+        $stmt->fetch();
+
+        // Verify the password
+        if ($password === $stored_password) {
+            // Successful login
+            $_SESSION['user_id'] = $user_id;
+            $_SESSION['username'] = $username;
+            header('Location: dashboard.php');
+            exit();
+        } else {
+            die('Error: Invalid username or password.');
+        }
+    } else {
+        die('Error: Invalid username or password.');
+    }
+
+    $stmt->close();
 }
 
-// Check if .env has required variables
-if (empty($env['DB_HOST']) || empty($env['DB_USER']) || empty($env['DB_NAME'])) {
-    die('Error: Missing required .env variables.');
-}
-
-// Create database connection
-$conn = new mysqli(
-    $env['DB_HOST'] ?? 'localhost',
-    $env['DB_USER'] ?? 'root',
-    $env['DB_PASS'] ?? '',
-    $env['DB_NAME'] ?? 'audiohub'
-);
-
-// Check connection
-if ($conn->connect_error) {
-    die('Database connection failed: ' . $conn->connect_error);
-}
-
-
-$conn->set_charset('utf8mb4');
-
-// Process login form here (when implemented)
-// TODO: Validate username/password against database
+$stmt->close();
