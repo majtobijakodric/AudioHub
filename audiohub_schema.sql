@@ -3,7 +3,6 @@
 
 -- Create database if not exists
 CREATE DATABASE IF NOT EXISTS audiohub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE audiohub;
 
 -- ============================================================================
 -- Table: Genres 
@@ -12,7 +11,7 @@ CREATE TABLE IF NOT EXISTS genres (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
     description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================================
@@ -26,9 +25,9 @@ CREATE TABLE IF NOT EXISTS users (
     age INT,
     gender ENUM('male', 'female', 'other', 'prefer_not_to_say'),
     status ENUM('active', 'inactive', 'blocked') DEFAULT 'active',
-    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
     last_login_at TIMESTAMP NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_username (username),
     INDEX idx_email (email),
@@ -46,13 +45,13 @@ CREATE TABLE IF NOT EXISTS songs (
     title VARCHAR(255) NOT NULL,
     channel_name VARCHAR(255),
     description TEXT,
-    duration INT COMMENT 'Duration in seconds',
+    duration INT,
     youtube_url VARCHAR(500) NOT NULL,
     thumbnail_url VARCHAR(500),
     youtube_published_at DATETIME,
-    imported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    imported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
     import_status ENUM('pending', 'downloading', 'ready', 'failed') DEFAULT 'pending',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE SET NULL,
@@ -92,7 +91,7 @@ ON DUPLICATE KEY UPDATE name=name;
 -- Create a test user (use password_hash() in PHP!)
 -- INSERT INTO users (username, email, password, age, gender) 
 -- VALUES ('testuser', 'test@example.com', '$2y$10$...hash...', 25, 'male');
-
+-- 
 -- Import a YouTube video
 -- INSERT INTO songs (user_id, youtube_video_id, title, channel_name, duration, youtube_url, thumbnail_url, genre_id)
 -- VALUES (1, 'dQw4w9WgXcQ', 'Rick Astley - Never Gonna Give You Up', 'Rick Astley', 213, 
