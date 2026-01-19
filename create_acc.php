@@ -1,6 +1,4 @@
 <?php
-// NO session_start() needed - just redirect to login
-
 require_once __DIR__ . '/src/database.php';
 $db = Database::getInstance();
 $conn = $db->getConnection();
