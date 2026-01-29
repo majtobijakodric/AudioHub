@@ -1,3 +1,2 @@
-.env
-/storage/music/
-/storage/logs/
+node_modules
+dist

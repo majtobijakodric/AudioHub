@@ -1,0 +1,28 @@
+{
+  "name": "audiohub",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start-nodemon": "nodemon --watch src --ext ts --exec \"tsc && node dist/index.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/majtobijakodric/audiohub.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/majtobijakodric/audiohub/issues"
+  },
+  "homepage": "https://github.com/majtobijakodric/audiohub#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "express": "^5.2.1"
+  },
+  "dependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
