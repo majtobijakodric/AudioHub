@@ -8,6 +8,11 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Hello, World!');
 });
 
+app.get('/about', (req: Request, res: Response) => {
+    res.send('This is AudioHub!');
+});
+
+
 app.listen(port, () => {
     console.log('Server is running at http://localhost:' + port);
 });
