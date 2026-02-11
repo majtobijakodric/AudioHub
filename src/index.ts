@@ -1,6 +1,6 @@
 // Import Express framework for building web servers
 import express from 'express';
-import type { Express, Request, Response } from 'express';
+import type { Express } from 'express';
 import { PORT } from './secrets.js';
 import rootRouter from './routes/index.js';
 
@@ -9,7 +9,9 @@ const app: Express = express();
 const port = PORT;
 
 // Mount all API routes under the /api prefix (e.g., /api/login).
-app.use('/api', rootRouter)
+app.use(express.json());
+
+app.use('/api', rootRouter);
 
 // Start the server
 app.listen(port, () => {
