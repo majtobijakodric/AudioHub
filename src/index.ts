@@ -1,30 +1,17 @@
 // Import Express framework for building web servers
 import express from 'express';
-// Import type definitions for Request and Response objects
-import type { Request, Response } from 'express';
-import path from 'path';
+import type { Express, Request, Response } from 'express';
+import { PORT } from './secrets.js';
+import rootRouter from './routes/index.js';
 
 // Set the path to the public folder where static files are stored
-const publicDir = path.join(process.cwd(), 'src', 'public');
-const app = express();
-const port = 8000;
+const app: Express = express();
+const port = PORT;
 
-// Serve static files (HTML, CSS, JS, images, etc.) from the public folder
-app.use(express.static(publicDir));
-
-
-// Handle get requests
-app.get('/', (req: Request, res: Response) => {
-    res.sendFile(path.join(publicDir, 'index.html'));
-});
-
-app.get('/about', (req: Request, res: Response) => {
-    res.send('This is AudioHub!');
-
-});
+// Mount all API routes under the /api prefix (e.g., /api/login).
+app.use('/api', rootRouter)
 
 // Start the server
 app.listen(port, () => {
     console.log('Server is running at http://localhost:' + port);
 });
-
