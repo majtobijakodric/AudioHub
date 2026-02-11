@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --watch src --ext \"*\" --exec \"tsc && node dist/index.js\""
+    "start": "npx nodemon"
   },
   "repository": {
     "type": "git",
@@ -20,10 +20,14 @@
   "homepage": "https://github.com/majtobijakodric/audiohub#readme",
   "devDependencies": {
     "@types/express": "^5.0.6",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
+    "@prisma/client": "^7.4.0",
+    "dotenv": "^17.2.4",
     "nodemon": "^3.1.11",
+    "prisma": "^7.4.0",
     "typescript": "^5.9.3"
   }
 }
