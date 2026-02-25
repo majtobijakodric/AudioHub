@@ -19,7 +19,8 @@ Right now this is a backend beginner project built with TypeScript, Node.js, Exp
 - npm (comes with Node.js)
 - Git
 - MySQL or MariaDB
-- Postman (optional, for testing)
+- REST Client extension for VS Code (recommended): https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+- Postman (optional alternative): https://www.postman.com/downloads/
 
 ## Fresh install setup (Windows + Linux)
 
@@ -85,7 +86,7 @@ Copy `.env.example` to `.env`, then set your real values.
 Example:
 ```env
 DATABASE_URL="mysql://audiohub-user:Test123@localhost:3306/audiohub"
-PORT=8000
+PORT=8080
 JWT_SECRET=type_your_secret_here
 ```
 
@@ -102,12 +103,29 @@ npm start
 
 If it works, terminal should show:
 ```text
-Server is running at http://localhost:8000
+Server is running at http://localhost:8080
 ```
 
-## Test with Postman
+## Test API (REST Client preferred, Postman optional)
+
+I personally use REST Client (VS Code extension marketplace):
+https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+
+Postman app (alternative):
+https://www.postman.com/downloads/
+
+### Option A: REST Client in VS Code (recommended)
+1. Open `tests/api-tests.rest`
+2. Start server: `npm start`
+3. Click **Send Request** above each request
+
+Requests in that file use:
+- `POST http://localhost:8080/api/auth/signup`
+- `POST http://localhost:8080/api/auth/login`
+
+### Option B: Postman (alternative)
 Method: `POST`  
-URL: `http://localhost:8000/api/auth/signup`  
+URL: `http://localhost:8080/api/auth/signup`  
 Body type: `raw` + `JSON`
 
 ```json
@@ -120,7 +138,7 @@ Body type: `raw` + `JSON`
 
 ## Common beginner problems
 
-### 1) `ECONNREFUSED 127.0.0.1:8000`
+### 1) `ECONNREFUSED 127.0.0.1:8080`
 This means server is not running (or wrong port).
 - Check terminal for crash error
 - Check `PORT` in `.env`
