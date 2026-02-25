@@ -86,6 +86,7 @@ Example:
 ```env
 DATABASE_URL="mysql://audiohub-user:Test123@localhost:3306/audiohub"
 PORT=8000
+JWT_SECRET=type_your_secret_here
 ```
 
 ### 6) Prisma setup
