@@ -23,7 +23,7 @@ POST http://localhost:8080/api/youtube/search
 Content-Type: application/json
 
 {
-    "ytTiltle": "lofi hip hop"
+    "ytTiltle": "21 savage"
 }
 
 ### Search YouTube videos (missing ytTiltle)
