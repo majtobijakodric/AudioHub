@@ -70,7 +70,7 @@ export const login = async (req: Request, res: Response) => {
         }
 
         // Check if the provided password matches the stored hashed password
-        if (!compareSync(password, user.password)) {
+        if (!user.password || !compareSync(password, user.password)) {
             res.status(401).json({ message: 'Invalid credentials' });
             return;
         }
