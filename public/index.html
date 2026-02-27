@@ -66,8 +66,27 @@
           <button type="submit">Login</button>
         </form>
       </section>
+
+      <section>
+        <h1>YouTube Video Search</h1>
+        <form id="youtube-search-form">
+          <label for="youtube-title">YouTube title</label>
+          <input
+            type="text"
+            id="youtube-title"
+            name="ytTiltle"
+            autocomplete="off"
+            required
+          />
+
+          <button type="submit">Search</button>
+        </form>
+        <!-- aria-live="polite" -> Indicates that an element will be updated -->
+        <div id="youtube-results" aria-live="polite"></div>
+      </section>
     </main>
 
+    <script src="./js/api.js"></script>
     <script src="./js/main.js"></script>
   </body>
 </html>
