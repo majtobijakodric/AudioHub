@@ -33,7 +33,7 @@ export const searchYoutube = async (req: Request, res: Response) => {
         try {
             const result = await yts(query);
 
-            videos = result.videos.slice(0, 3).map((video) => ({
+            videos = result.videos.slice(0, 5).map((video) => ({
                 videoId: video.videoId,
                 title: video.title,
                 url: video.url,
