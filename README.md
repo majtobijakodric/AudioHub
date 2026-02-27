@@ -7,6 +7,8 @@ Right now this is a backend beginner project built with TypeScript, Node.js, Exp
 - Express server with JSON support
 - API route group: `/api`
 - Auth route: `POST /api/auth/signup`
+- Auth route: `POST /api/auth/login`
+- YouTube search route: `POST /api/youtube/search`
 - Signup logic:
   - checks required fields (`name`, `email`, `password`)
   - checks if email already exists
@@ -122,6 +124,7 @@ https://www.postman.com/downloads/
 Requests in that file use:
 - `POST http://localhost:8080/api/auth/signup`
 - `POST http://localhost:8080/api/auth/login`
+- `POST http://localhost:8080/api/youtube/search`
 
 ### Option B: Postman (alternative)
 Method: `POST`  
@@ -133,6 +136,40 @@ Body type: `raw` + `JSON`
   "name": "Test User",
   "email": "test@example.com",
   "password": "secret123"
+}
+```
+
+### YouTube search request/response example
+Method: `POST`  
+URL: `http://localhost:8080/api/youtube/search`  
+Body type: `raw` + `JSON`
+
+Request:
+```json
+{
+  "ytTiltle": "lofi hip hop"
+}
+```
+
+Response:
+```json
+{
+  "query": "lofi hip hop",
+  "count": 5,
+  "results": [
+    {
+      "videoId": "string",
+      "title": "string",
+      "url": "string",
+      "duration": {
+        "seconds": 123,
+        "timestamp": "2:03"
+      },
+      "views": 123456,
+      "author": "channel name",
+      "thumbnail": "https://..."
+    }
+  ]
 }
 ```
 

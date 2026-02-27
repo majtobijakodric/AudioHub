@@ -49,3 +49,36 @@ Why this matters:
 - Keeps a history of database changes.
 - Lets teammates and CI apply the exact same schema updates.
 - Makes debugging and rollback workflows easier than ad-hoc schema pushes.
+
+## Adding a New API Endpoint
+
+Use this checklist when creating any new API endpoint.
+
+1. Create a controller in `src/controllers/<name>.ts`.
+2. Add strict input validation at the top of the handler.
+3. Return consistent JSON responses with clear status codes.
+4. Create a route file in `src/routes/<name>.ts`.
+5. Mount the route group in `src/routes/index.ts` under a clear prefix.
+6. Add at least one success and one failure request in `tests/api-tests.rest`.
+7. Update `README.md` with endpoint path, method, and sample body.
+8. Run:
+   - `npx tsc --noEmit`
+   - `npm start` and test endpoint manually
+
+### Minimal endpoint template
+
+```ts
+import type { Request, Response } from 'express';
+
+export const handlerName = async (req: Request, res: Response) => {
+  try {
+    // 1) Validate input
+    // 2) Execute logic
+    // 3) Return JSON
+    res.status(200).json({ ok: true });
+  } catch (error) {
+    console.log('Endpoint failed:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+```

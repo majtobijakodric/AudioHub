@@ -17,3 +17,26 @@ Content-Type: application/json
     "email": "newuser@example.com",
     "password": "123"
 }
+
+### Search YouTube videos (success)
+POST http://localhost:8080/api/youtube/search
+Content-Type: application/json
+
+{
+    "ytTiltle": "lofi hip hop"
+}
+
+### Search YouTube videos (missing ytTiltle)
+POST http://localhost:8080/api/youtube/search
+Content-Type: application/json
+
+{
+}
+
+### Search YouTube videos (empty ytTiltle)
+POST http://localhost:8080/api/youtube/search
+Content-Type: application/json
+
+{
+    "ytTiltle": "   "
+}
