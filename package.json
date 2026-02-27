@@ -28,12 +28,14 @@
   "dependencies": {
     "@prisma/adapter-mariadb": "^7.4.0",
     "@prisma/client": "^7.4.0",
+    "@types/yt-search": "^2.10.3",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.4",
     "jsonwebtoken": "^9.0.3",
     "mariadb": "^3.4.5",
     "nodemon": "^3.1.11",
     "prisma": "^7.4.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "yt-search": "^2.13.1"
   }
 }
