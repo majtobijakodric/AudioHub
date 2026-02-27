@@ -75,6 +75,7 @@ export const login = async (req: Request, res: Response) => {
             return;
         }
 
+        // Generate a JWT token containing the user ID for authenticated requests
         const token = jwt.sign({
             userId: user.id
         }, JWT_SECRET);
