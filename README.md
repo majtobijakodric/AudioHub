@@ -147,7 +147,7 @@ Body type: `raw` + `JSON`
 Request:
 ```json
 {
-  "ytTiltle": "lofi hip hop"
+  "ytTitle": "lofi hip hop"
 }
 ```
 

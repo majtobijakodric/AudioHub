@@ -23,20 +23,20 @@ POST http://localhost:8080/api/youtube/search
 Content-Type: application/json
 
 {
-    "ytTiltle": "21 savage"
+    "ytTitle": "21 savage"
 }
 
-### Search YouTube videos (missing ytTiltle)
+### Search YouTube videos (missing ytTitle)
 POST http://localhost:8080/api/youtube/search
 Content-Type: application/json
 
 {
 }
 
-### Search YouTube videos (empty ytTiltle)
+### Search YouTube videos (empty ytTitle)
 POST http://localhost:8080/api/youtube/search
 Content-Type: application/json
 
 {
-    "ytTiltle": "   "
+    "ytTitle": "   "
 }

@@ -19,14 +19,14 @@ type YoutubeVideoResult = {
 
 export const searchYoutube = async (req: Request, res: Response) => {
     try {
-        const { ytTiltle } = req.body;
+        const { ytTitle } = req.body;
 
-        if (typeof ytTiltle !== 'string' || ytTiltle.trim().length === 0) {
-            res.status(400).json({ message: 'ytTiltle is required and must be a non-empty string' });
+        if (typeof ytTitle !== 'string' || ytTitle.trim().length === 0) {
+            res.status(400).json({ message: 'ytTitle is required and must be a non-empty string' });
             return;
         }
 
-        const query = ytTiltle.trim();
+        const query = ytTitle.trim();
 
         let videos: YoutubeVideoResult[] = [];
 

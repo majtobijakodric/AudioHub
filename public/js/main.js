@@ -92,6 +92,7 @@ if (registerForm) {
       registeredUser = await window.api.signup(registerValues);
       console.log("User created:", registeredUser);
     } catch (error) {
+      // Use .message only when the thrown value is a real Error object.
       console.error("Signup error:", error instanceof Error ? error.message : error);
     }
   });
