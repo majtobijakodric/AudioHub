@@ -4,3 +4,5 @@ dist/
 .vscode/
 .codex
 src/generated/prisma/
+data/songs/*
+!data/songs/.gitkeep
