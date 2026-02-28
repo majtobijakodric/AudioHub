@@ -17,3 +17,38 @@ model User {
 
   @@map("users")
 }
+
+model Author {
+  id        Int      @id @default(autoincrement())
+  name      String
+  channelId String?  @unique
+  songs     Song[]
+  createdAt DateTime @default(now())
+
+  @@map("authors")
+}
+
+model Song {
+  id                Int        @id @default(autoincrement())
+  videoId           String     @unique
+  title             String
+  authorId          Int
+  author            Author     @relation(fields: [authorId], references: [id])
+  durationSeconds   Int        @default(0)
+  durationTimestamp  String     @default("0:00")
+  fileSizeBytes     BigInt?
+  filePath          String
+  thumbnail         String?
+  status            SongStatus @default(downloaded)
+  downloadedAt      DateTime?
+  lastListenedAt    DateTime?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  @@map("songs")
+}
+
+enum SongStatus {
+  downloaded
+  notDownloaded
+}
