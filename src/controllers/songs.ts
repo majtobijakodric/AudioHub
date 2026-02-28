@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { prismaClient } from '../lib/prisma.js';
 import { createRequire } from 'node:module';
-import { existsSync, statSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
 
 const require = createRequire(import.meta.url);
@@ -82,12 +82,6 @@ export const downloadSong = async (req: Request, res: Response) => {
             return;
         }
 
-        // Get the file size after download
-        let fileSizeBytes: bigint | null = null;
-        if (existsSync(filePath)) {
-            fileSizeBytes = BigInt(statSync(filePath).size);
-        }
-
         // Determine if this is a re-download (repair) or a new download
         const isRedownload = existingSong !== null && existingSong !== undefined;
 
@@ -99,7 +93,6 @@ export const downloadSong = async (req: Request, res: Response) => {
                 where: { videoId: trimmedVideoId },
                 data: {
                     filePath,
-                    fileSizeBytes,
                     status: 'downloaded',
                     downloadedAt: new Date()
                 },
@@ -114,7 +107,6 @@ export const downloadSong = async (req: Request, res: Response) => {
                     authorId: authorRecord.id,
                     durationSeconds: typeof durationSeconds === 'number' ? durationSeconds : 0,
                     durationTimestamp: typeof durationTimestamp === 'string' ? durationTimestamp : '0:00',
-                    fileSizeBytes,
                     filePath,
                     thumbnail: typeof thumbnail === 'string' ? thumbnail : null,
                     status: 'downloaded',

@@ -21,7 +21,6 @@ model User {
 model Author {
   id        Int      @id @default(autoincrement())
   name      String
-  channelId String?  @unique
   songs     Song[]
   createdAt DateTime @default(now())
 
@@ -36,7 +35,6 @@ model Song {
   author            Author     @relation(fields: [authorId], references: [id])
   durationSeconds   Int        @default(0)
   durationTimestamp  String     @default("0:00")
-  fileSizeBytes     BigInt?
   filePath          String
   thumbnail         String?
   status            SongStatus @default(downloaded)
