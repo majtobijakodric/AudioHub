@@ -6,3 +6,5 @@ dist/
 src/generated/prisma/
 data/songs/*
 !data/songs/.gitkeep
+logs/*
+!logs/.gitkeep
