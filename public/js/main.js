@@ -73,6 +73,28 @@ function renderYoutubeResults(data) {
     item.appendChild(thumb);
     item.appendChild(middle);
     item.appendChild(right);
+
+    // Click a song entry to trigger download
+    item.style.cursor = "pointer";
+    item.addEventListener("click", async () => {
+      try {
+        const downloadResponse = await window.api.downloadSong({
+          videoId: video.videoId,
+          title: video.title,
+          author: video.author,
+          durationSeconds: video.duration?.seconds ?? 0,
+          durationTimestamp: video.duration?.timestamp ?? "0:00",
+          thumbnail: video.thumbnail,
+        });
+        console.log("Download response:", downloadResponse);
+      } catch (error) {
+        console.error(
+          "Download error:",
+          error instanceof Error ? error.message : error,
+        );
+      }
+    });
+
     list.appendChild(item);
   });
 
