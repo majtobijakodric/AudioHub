@@ -1,7 +1,6 @@
-// Change this in the actual application to the correct backend URL
-const AUTH_BASE_URL = "http://localhost:8080/api/auth";
-const YOUTUBE_BASE_URL = "http://localhost:8080/api/youtube";
-const SONGS_BASE_URL = "http://localhost:8080/api/songs";
+const AUTH_BASE_URL = "/api/auth";
+const YOUTUBE_BASE_URL = "/api/youtube";
+const SONGS_BASE_URL = "/api/songs";
 
 // Send a JSON POST request and return parsed JSON response
 async function postJson(url, payload) {

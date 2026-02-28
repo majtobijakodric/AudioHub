@@ -40,6 +40,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/api', rootRouter);
 
 // Start the server
-app.listen(port, () => {
-    logger.info('Server is running at http://localhost:' + port);
+app.listen(port, '0.0.0.0', () => {
+    logger.info(`Server is running on port ${port}`);
 });
