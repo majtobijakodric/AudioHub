@@ -9,9 +9,10 @@
 
 ## Architecture
 - Entry point is `src/index.ts`: sets CORS headers, enables JSON, serves `public/`, and mounts API under `/api`.
-- Routing is layered: `src/routes/index.ts` mounts feature routers (`/auth`, `/youtube`), each router delegates to controller functions.
+- Routing is layered: `src/routes/index.ts` mounts feature routers (`/auth`, `/youtube`, `/songs`), each router delegates to controller functions.
 - DB access is centralized in `src/lib/prisma.ts` via one exported `prismaClient`.
 - Prisma client is generated to `src/generated/prisma` from `prisma/schema.prisma`; do not hand-edit generated files.
+- Downloaded audio files are stored under `data/songs/` (not in `public/`); files are named `{videoId}.opus`.
 
 ## Build and Test
 - Install dependencies: `npm install`
@@ -22,11 +23,13 @@
 - Manual API checks: run requests in `tests/api-tests.rest`.
 
 ## Project Conventions
-- Use `createRequire(import.meta.url)` for CommonJS-only packages (`jsonwebtoken`, `yt-search`) as shown in controllers.
+- Use `createRequire(import.meta.url)` for CommonJS-only packages (`jsonwebtoken`, `yt-search`, `yt-dlp-wrap`) as shown in controllers.
 - Auth flow pattern:
   - `signup`: validate -> check uniqueness -> hash password -> return safe fields only.
   - `login`: validate -> find user -> compare hash -> return `{ user, token }`.
 - Keep YouTube search response shape stable (`query`, `count`, `results[]`) from `src/controllers/youtube.ts`.
+- Song download flow: validate videoId -> check DB for existing record -> check file on disk -> download via yt-dlp if needed -> upsert DB record (`src/controllers/songs.ts`).
+- Song dedup key is `videoId` (unique). If DB record exists but file is missing, re-download and repair.
 - Add new endpoints by following the checklist in `helper.md` and mount route groups in `src/routes/index.ts`.
 
 ## Integration Points
@@ -34,6 +37,7 @@
 - Secrets/config come from `.env` loaded by `src/secrets.ts`.
 - Static frontend files are served directly from `public/`.
 - External API dependency: YouTube search through `yt-search` in `src/controllers/youtube.ts`.
+- External binary dependency: `yt-dlp` CLI (must be installed on the system); wrapped by `yt-dlp-wrap` in `src/controllers/songs.ts`.
 
 ## Security
 - Required env vars: `DATABASE_URL`, `JWT_SECRET`; startup should fail fast if missing (`src/secrets.ts`).

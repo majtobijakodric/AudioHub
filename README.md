@@ -15,6 +15,15 @@ Right now this is a backend beginner project built with TypeScript, Node.js, Exp
   - hashes password with `bcrypt`
   - saves user to database
 - Prisma `User` model and migration
+- Song download route: `POST /api/songs/download`
+- Song download logic:
+  - validates videoId
+  - checks if song already exists in DB and on disk (dedup)
+  - re-downloads if DB record exists but file is missing
+  - downloads audio via yt-dlp and stores as `.opus` in `data/songs/`
+  - creates Author record if not already present
+  - saves Song record with metadata (duration, file size, thumbnail, status)
+- Prisma `Author` and `Song` models with migration
 
 ## Requirements
 - Node.js (LTS version recommended)
