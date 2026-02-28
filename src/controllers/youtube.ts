@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { createRequire } from 'node:module';
+import { logger } from '../lib/logger.js';
 
 const require = createRequire(import.meta.url);
 const yts = require('yt-search') as typeof import('yt-search');
@@ -46,7 +47,7 @@ export const searchYoutube = async (req: Request, res: Response) => {
                 thumbnail: video.thumbnail ?? video.image
             }));
         } catch (error) {
-            console.log('YouTube search upstream failed:', error);
+            logger.error('YouTube search upstream failed', error);
             res.status(502).json({ message: 'Failed to fetch results from YouTube' });
             return;
         }
@@ -57,7 +58,7 @@ export const searchYoutube = async (req: Request, res: Response) => {
             results: videos
         });
     } catch (error) {
-        console.log('YouTube search failed:', error);
+        logger.error('YouTube search failed', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

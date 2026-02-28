@@ -3,6 +3,7 @@ import express from 'express';
 import type { Express, NextFunction, Request, Response } from 'express';
 import { PORT } from './secrets.js';
 import rootRouter from './routes/index.js';
+import { logger } from './lib/logger.js';
 
 // Set the path to the public folder where static files are stored
 const app: Express = express();
@@ -25,9 +26,20 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use(express.json());
 app.use(express.static('public'));
 
+// Log every incoming request with IP, method, path, status code, and response time.
+app.use((req: Request, res: Response, next: NextFunction) => {
+    const start = Date.now();
+    res.on('finish', () => {
+        const duration = Date.now() - start;
+        const ip = req.ip ?? req.socket.remoteAddress ?? 'unknown';
+        logger.info(`${ip} ${req.method} ${req.originalUrl} ${res.statusCode} ${duration}ms`);
+    });
+    next();
+});
+
 app.use('/api', rootRouter);
 
 // Start the server
 app.listen(port, () => {
-    console.log('Server is running at http://localhost:' + port);
+    logger.info('Server is running at http://localhost:' + port);
 });

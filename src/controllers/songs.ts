@@ -3,6 +3,7 @@ import { prismaClient } from '../lib/prisma.js';
 import { createRequire } from 'node:module';
 import { existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
+import { logger } from '../lib/logger.js';
 
 const require = createRequire(import.meta.url);
 const YTDlpWrap = require('yt-dlp-wrap').default;
@@ -77,7 +78,7 @@ export const downloadSong = async (req: Request, res: Response) => {
                 '--no-playlist'
             ]);
         } catch (dlError) {
-            console.log('yt-dlp download failed:', dlError);
+            logger.error('yt-dlp download failed', dlError);
             res.status(502).json({ message: 'Failed to download audio from YouTube' });
             return;
         }
@@ -125,7 +126,7 @@ export const downloadSong = async (req: Request, res: Response) => {
         res.status(statusCode).json({ message, song });
 
     } catch (error) {
-        console.log('Song download failed:', error);
+        logger.error('Song download failed', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

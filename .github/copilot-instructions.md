@@ -5,7 +5,7 @@
 - In TS files, keep `.js` extensions in local imports (example: `src/index.ts`, `src/routes/index.ts`).
 - Keep route handlers in `src/controllers/*.ts` and routers in `src/routes/*.ts`; handlers are async and return JSON.
 - Validate request bodies early and return immediately on failure (`src/controllers/auth.ts`, `src/controllers/youtube.ts`).
-- Use the existing error style: `console.log('<context> failed:', error)` then `res.status(500).json({ message: 'Internal server error' })`.
+- Use the logger from `src/lib/logger.ts`: `logger.info('message')` and `logger.error('context', error)`. Never use raw `console.log` for application logging.
 
 ## Architecture
 - Entry point is `src/index.ts`: sets CORS headers, enables JSON, serves `public/`, and mounts API under `/api`.
@@ -13,6 +13,9 @@
 - DB access is centralized in `src/lib/prisma.ts` via one exported `prismaClient`.
 - Prisma client is generated to `src/generated/prisma` from `prisma/schema.prisma`; do not hand-edit generated files.
 - Downloaded audio files are stored under `data/songs/` (not in `public/`); files are named `{videoId}.opus`.
+- Logging is centralized in `src/lib/logger.ts`; outputs to both console and `logs/log-{N}-{DD.MM.YYYY}-{HH.MM}.txt` (new file each server start).
+- Every HTTP request is automatically logged by middleware in `src/index.ts` with method, path, status, and response time.
+- Log files are stored under `logs/` and gitignored; only `.gitkeep` is tracked.
 
 ## Build and Test
 - Install dependencies: `npm install`

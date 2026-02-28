@@ -3,6 +3,7 @@ import { prismaClient } from '../lib/prisma.js';
 import { hashSync, compareSync } from 'bcrypt';
 import { createRequire } from 'node:module';
 import { JWT_SECRET } from '../secrets.js';
+import { logger } from '../lib/logger.js';
 
 const require = createRequire(import.meta.url);
 const jwt = require('jsonwebtoken') as typeof import('jsonwebtoken');
@@ -45,7 +46,7 @@ export const signup = async (req: Request, res: Response) => {
             createdAt: user.createdAt
         });
     } catch (error) {
-        console.log('Signup failed:', error);
+        logger.error('Signup failed', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
@@ -83,7 +84,7 @@ export const login = async (req: Request, res: Response) => {
         res.json({user, token });
 
     } catch (error) {
-        console.log('Login failed:', error);
+        logger.error('Login failed', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
