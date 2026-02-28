@@ -1,0 +1,23 @@
+
+### Search YouTube videos (success)
+POST http://localhost:8080/api/youtube/search
+Content-Type: application/json
+
+{
+    "ytTitle": "21 savage"
+}
+
+### Search YouTube videos (missing ytTitle)
+POST http://localhost:8080/api/youtube/search
+Content-Type: application/json
+
+{
+}
+
+### Search YouTube videos (empty ytTitle)
+POST http://localhost:8080/api/youtube/search
+Content-Type: application/json
+
+{
+    "ytTitle": "   "
+}

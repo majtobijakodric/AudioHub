@@ -1,46 +1,4 @@
 
-### Create a new user
-POST http://localhost:8080/api/auth/signup
-Content-Type: application/json
-
-{
-    "name": "newuser",
-    "email": "newuser@example.com",
-    "password": "123"
-}
-
-### Login with the new user
-POST http://localhost:8080/api/auth/login
-Content-Type: application/json
-
-{
-    "email": "newuser@example.com",
-    "password": "123"
-}
-
-### Search YouTube videos (success)
-POST http://localhost:8080/api/youtube/search
-Content-Type: application/json
-
-{
-    "ytTitle": "21 savage"
-}
-
-### Search YouTube videos (missing ytTitle)
-POST http://localhost:8080/api/youtube/search
-Content-Type: application/json
-
-{
-}
-
-### Search YouTube videos (empty ytTitle)
-POST http://localhost:8080/api/youtube/search
-Content-Type: application/json
-
-{
-    "ytTitle": "   "
-}
-
 ### Download a song (success)
 POST http://localhost:8080/api/songs/download
 Content-Type: application/json
