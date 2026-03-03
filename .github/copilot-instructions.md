@@ -48,3 +48,15 @@
 - Keep password hashing with `bcrypt` and compare with `compareSync` unless refactoring auth holistically.
 - JWT signing uses `JWT_SECRET`; preserve token payload compatibility (`{ userId }`) unless coordinated.
 - CORS is currently permissive (`*`) in `src/index.ts`; do not tighten/alter without explicit product requirement.
+
+## Documentation Authoring Rules
+- Documentation lives in `documentation/` and must be indexed from `README.md` in the **Documentation** section.
+- Keep one topic per file and use lowercase kebab-case names (`setup.md`, `architecture.md`, `api.md`).
+- Write docs to be beginner-friendly first: explain concepts before details, avoid jargon when possible, and define required terms on first use.
+- For setup or operations steps, use numbered sequences with copy-paste-ready commands and expected outcomes.
+- Prefer practical examples taken from current routes, scripts, and files in this repo.
+- Use consistent structure in each doc file: purpose, prerequisites (if needed), steps/sections, verification, and related links.
+- Use clear, direct language; short paragraphs; active voice; and descriptive headings.
+- Keep canonical information in one place and cross-link instead of duplicating content.
+- When code behavior changes, update related docs in the same change whenever feasible.
+- If adding a new documentation file, add its link in `README.md` using the project’s documentation link order.

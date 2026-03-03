@@ -3,6 +3,19 @@
 AudioHub is a free and open source music web app project.
 Right now this is a backend beginner project built with TypeScript, Node.js, Express, Prisma, and MySQL/MariaDB.
 
+## Documentation
+- [Setup](documentation/setup.md)
+- [Configuration](documentation/configuration.md)
+- [Architecture](documentation/architecture.md)
+- [API](documentation/api.md)
+- [Database](documentation/database.md)
+- [Operations](documentation/operations.md)
+- [Security](documentation/security.md)
+
+Planning and standards:
+- [Documentation plan](documentation/plan.md)
+- [Copilot documentation guidelines](documentation/co-pilot.md)
+
 ## What is built right now
 - Express server with JSON support
 - API route group: `/api`
