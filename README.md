@@ -1,28 +1,16 @@
 # AudioHub
 
-AudioHub is a beginner-friendly backend project for searching YouTube content and downloading song audio metadata/files.
-It is built with TypeScript, Node.js, Express, Prisma, and MySQL/MariaDB.
+AudioHub is a web application for listening to music that allows users to play songs without ads or subscriptions.
+It works in a web browser and requires user account registration.
+Users can search for music through YouTube, create playlists, and listen to their uploaded tracks.
 
-## Features
-- User authentication (`signup`, `login`) with JWT
-- YouTube search endpoint
-- Song download flow with dedup/repair by `videoId`
-- Prisma-based persistence for users, authors, and songs
-- Structured application logging
+The goal of the project is to build a functional and user-friendly platform that offers a simple alternative to existing music streaming services.
 
-## Tech Stack
-- TypeScript + Node.js + Express
-- Prisma ORM + MySQL/MariaDB
-- `yt-search` and `yt-dlp-wrap`
 
-## Quick Start
+## How to use?
 For full setup instructions, use [documentation/setup.md](documentation/setup.md).
 
-```bash
-npm install
-npx prisma generate
-npm start
-```
+
 
 ## Documentation
 - [Setup](documentation/setup.md)
@@ -33,9 +21,6 @@ npm start
 - [Operations](documentation/operations.md)
 - [Security](documentation/security.md)
 
-Planning and standards:
-- [Documentation plan](documentation/plan.md)
-- [Copilot documentation guidelines](documentation/co-pilot.md)
 
 ## Project Structure
 - `src/` application code
