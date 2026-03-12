@@ -1,5 +1,3 @@
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/draw_sync_painter.dart';
+export 'src/draw_sync_canvas.dart';
+export 'src/touch_drawing_canvas.dart';
