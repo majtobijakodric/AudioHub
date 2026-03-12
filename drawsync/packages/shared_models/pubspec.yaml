@@ -1,0 +1,9 @@
+name: shared_models
+description: Domain models for DrawSync drawing application
+version: 0.1.0
+
+environment:
+  sdk: ^3.0.0
+
+dependencies:
+  uuid: ^4.0.0
