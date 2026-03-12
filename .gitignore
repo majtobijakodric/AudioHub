@@ -8,3 +8,15 @@ data/songs/*
 !data/songs/.gitkeep
 logs/*
 !logs/.gitkeep
+
+# Flutter / Dart
+drawsync/.dart_tool/
+drawsync/**/.dart_tool/
+drawsync/**/build/
+drawsync/**/.flutter-plugins
+drawsync/**/.flutter-plugins-dependencies
+drawsync/**/.packages
+drawsync/**/*.iml
+drawsync/**/.idea/
+drawsync/**/pubspec.lock
+drawsync/**/.metadata

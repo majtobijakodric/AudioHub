@@ -1,0 +1,11 @@
+name: shared_protocol
+description: Communication protocol for DrawSync
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.0.0
+
+dependencies:
+  shared_models:
+    path: ../shared_models
