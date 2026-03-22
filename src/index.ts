@@ -41,5 +41,5 @@ app.use('/api', rootRouter);
 
 // Start the server
 app.listen(port, '0.0.0.0', () => {
-    logger.info(`Server is running on port ${port}`);
+    logger.info(`Server is running on port http://localhost:${port}`);
 });
