@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { prismaClient } from '../lib/prisma.js';
 import { createRequire } from 'node:module';
-import { existsSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { logger } from '../lib/logger.js';
 
@@ -17,6 +17,39 @@ const SONGS_DIR = path.resolve('data/songs');
 // Ensure the songs directory exists on startup.
 if (!existsSync(SONGS_DIR)) {
     mkdirSync(SONGS_DIR, { recursive: true });
+}
+
+const TITLE_PREVIEW_LENGTH = 28;
+
+function formatBytes(value: number | undefined): string {
+    if (!Number.isFinite(value) || value === undefined || value < 0) {
+        return 'unknown';
+    }
+
+    if (value === 0) {
+        return '0 B';
+    }
+
+    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    let size = value;
+    let unitIndex = 0;
+
+    while (size >= 1024 && unitIndex < units.length - 1) {
+        size /= 1024;
+        unitIndex += 1;
+    }
+
+    const digits = size >= 10 || unitIndex === 0 ? 0 : 1;
+    return `${size.toFixed(digits)} ${units[unitIndex]}`;
+}
+
+function buildProgressLabel(videoId: string, title: unknown): string {
+    const safeTitle = typeof title === 'string' && title.trim().length > 0 ? title.trim() : 'Untitled';
+    const preview = safeTitle.length > TITLE_PREVIEW_LENGTH
+        ? `${safeTitle.slice(0, TITLE_PREVIEW_LENGTH - 3)}...`
+        : safeTitle;
+
+    return `[${videoId}] ${preview}`;
 }
 
 export const downloadSong = async (req: Request, res: Response) => {
@@ -67,9 +100,11 @@ export const downloadSong = async (req: Request, res: Response) => {
 
         // Download audio from YouTube using yt-dlp
         const videoUrl = `https://www.youtube.com/watch?v=${trimmedVideoId}`;
+        const progressLabel = buildProgressLabel(trimmedVideoId, title);
+        const downloadStartedAt = Date.now();
 
         try {
-            await ytDlp.exec([
+            await ytDlp.execPromise([
                 videoUrl,
                 '-x',
                 '--audio-format', 'opus',
@@ -82,6 +117,11 @@ export const downloadSong = async (req: Request, res: Response) => {
             res.status(502).json({ message: 'Failed to download audio from YouTube' });
             return;
         }
+
+        const finalFileSize = existsSync(filePath) ? statSync(filePath).size : 0;
+        const elapsedSeconds = ((Date.now() - downloadStartedAt) / 1000).toFixed(1);
+
+        logger.info(`Download complete ${progressLabel} saved=${formatBytes(finalFileSize)} path=${filePath} elapsed=${elapsedSeconds}s`);
 
         // Determine if this is a re-download (repair) or a new download
         const isRedownload = existingSong !== null && existingSong !== undefined;
