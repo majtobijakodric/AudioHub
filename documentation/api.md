@@ -7,6 +7,9 @@ Document the current HTTP endpoints and their expected behavior.
 - Local development: `http://localhost:8080/api`
 
 ## Endpoints
+### Health
+- `GET /health`
+
 ### Auth
 - `POST /auth/signup`
 - `POST /auth/login`
@@ -21,9 +24,11 @@ Document the current HTTP endpoints and their expected behavior.
 - Requests use JSON bodies.
 - Validate required fields before processing.
 - Return consistent JSON responses for success and failure.
+- `GET /health` returns `200` with `{ "ok": true, "service": "audiohub" }`.
 
 ## Manual Testing
 Use REST files in `tests/`:
+- `tests/health.rest`
 - `tests/auth.rest`
 - `tests/youtube.rest`
 - `tests/songs.rest`
