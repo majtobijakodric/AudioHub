@@ -8,23 +8,25 @@
     <script>
       (() => {
         const storageKey = 'audiohub.theme'
-        let theme = 'light'
+        const getSystemTheme = () =>
+          window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        let theme = getSystemTheme()
 
         try {
           const storedTheme = window.localStorage.getItem(storageKey)
-          if (storedTheme === 'dark') {
-            theme = 'dark'
+          if (storedTheme === 'dark' || storedTheme === 'light') {
+            theme = storedTheme
           }
         } catch {
-          theme = 'light'
+          theme = getSystemTheme()
         }
 
         document.documentElement.dataset.theme = theme
         document.documentElement.style.colorScheme = theme === 'dark' ? 'dark' : 'light'
       })()
     </script>
-    <script type="module" crossorigin src="/audiohub/assets/index-DEUXUjIs.js"></script>
-    <link rel="stylesheet" crossorigin href="/audiohub/assets/index-DXPkiVLG.css">
+    <script type="module" crossorigin src="/audiohub/assets/index-D3I0iJ-m.js"></script>
+    <link rel="stylesheet" crossorigin href="/audiohub/assets/index-BfE6ZUY0.css">
   </head>
   <body>
     <div id="app"></div>
