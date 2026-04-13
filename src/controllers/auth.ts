@@ -8,6 +8,20 @@ import { logger } from '../lib/logger.js';
 const require = createRequire(import.meta.url);
 const jwt = require('jsonwebtoken') as typeof import('jsonwebtoken');
 
+function toSafeUser(user: {
+    name: string;
+    email: string;
+    createdAt: Date;
+    updatedAt?: Date;
+}) {
+    return {
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt,
+        ...(user.updatedAt ? { updatedAt: user.updatedAt } : {})
+    };
+}
+
 
 export const signup = async (req: Request, res: Response) => {
     try {
@@ -39,12 +53,7 @@ export const signup = async (req: Request, res: Response) => {
             }
         });
 
-        res.status(201).json({
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            createdAt: user.createdAt
-        });
+        res.status(201).json(toSafeUser(user));
     } catch (error) {
         logger.error('Signup failed', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -81,7 +90,7 @@ export const login = async (req: Request, res: Response) => {
             userId: user.id
         }, JWT_SECRET);
 
-        res.json({user, token });
+        res.json({ user: toSafeUser(user), token });
 
     } catch (error) {
         logger.error('Login failed', error);

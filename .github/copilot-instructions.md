@@ -50,8 +50,8 @@
 - CORS is currently permissive (`*`) in `src/index.ts`; do not tighten/alter without explicit product requirement.
 
 ## Documentation Authoring Rules
-- Documentation lives in `documentation/` and must be indexed from `README.md` in the **Documentation** section.
-- Keep one topic per file and use lowercase kebab-case names (`setup.md`, `architecture.md`, `api.md`).
+- Documentation lives in `docs/` and must be indexed from `README.md` in the **Documentation** section.
+- Keep one topic per file and use lowercase names such as `setup.md` and `api.md`.
 - Write docs to be beginner-friendly first: explain concepts before details, avoid jargon when possible, and define required terms on first use.
 - For setup or operations steps, use numbered sequences with copy-paste-ready commands and expected outcomes.
 - Prefer practical examples taken from current routes, scripts, and files in this repo.
