@@ -29,3 +29,6 @@ Content-Type: application/json
 {
     "videoId": "   "
 }
+
+### List Songs
+GET http://localhost:8080/api/songs/listsongs

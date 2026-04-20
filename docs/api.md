@@ -224,6 +224,47 @@ Status: `200 OK`
 - The frontend should format `durationSeconds` for display (for example, `212` -> `3:32`).
 - The audio file is stored by the backend in `data/songs/`.
 
+## GET /songs/listsongs
+Returns all downloaded songs.
+
+### What it does
+Fetches all songs from the database and returns them ordered by `downloadedAt` descending (newest first).
+
+### Example request
+```http
+GET /api/songs/listsongs
+```
+
+### Success response
+Status: `200 OK`
+
+```json
+{
+  "songs": [
+    {
+      "id": 12,
+      "videoId": "dQw4w9WgXcQ",
+      "title": "Rick Astley - Never Gonna Give You Up",
+      "durationSeconds": 212,
+      "filePath": "/home/user/audiohub/data/songs/dQw4w9WgXcQ.opus",
+      "thumbnail": "https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg",
+      "status": "downloaded",
+      "downloadedAt": "2026-04-20T10:00:00.000Z",
+      "lastListenedAt": null,
+      "createdAt": "2026-04-20T10:00:00.000Z",
+      "updatedAt": "2026-04-20T10:00:00.000Z"
+    }
+  ]
+}
+```
+
+### Common errors
+- `500 Internal Server Error`: unexpected server problem
+
+### Frontend note
+- Use this endpoint to render the local downloaded songs list.
+- Results are already ordered newest-first by `downloadedAt`.
+
 ## Test Files
 You can try these endpoints with the request files in `tests/`:
 - `tests/health.rest`

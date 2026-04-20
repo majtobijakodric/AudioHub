@@ -206,3 +206,16 @@ async function fetchSongData(videoId: string): Promise<SongData> {
         thumbnail: safeThumbnail
     };
 }
+
+export async function listSongs(req: Request, res: Response) {
+    try {
+        const songs = await prismaClient.song.findMany({
+            orderBy: { downloadedAt: 'desc' }
+        });
+
+        res.status(200).json({ songs });
+    } catch (error) {
+        logger.error('Failed to list songs', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
