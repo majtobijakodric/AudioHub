@@ -18,21 +18,10 @@ model User {
   @@map("users")
 }
 
-model Author {
-  id        Int      @id @default(autoincrement())
-  name      String
-  songs     Song[]
-  createdAt DateTime @default(now())
-
-  @@map("authors")
-}
-
 model Song {
   id                Int        @id @default(autoincrement())
   videoId           String     @unique
   title             String
-  authorId          Int
-  author            Author     @relation(fields: [authorId], references: [id])
   durationSeconds   Int        @default(0)
   durationTimestamp  String     @default("0:00")
   filePath          String

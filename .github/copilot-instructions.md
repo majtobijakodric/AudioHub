@@ -1,11 +1,22 @@
 # Project Guidelines
 
+## Assistant Style
+- Explain code in plain language first, then the details.
+- Keep explanations beginner-friendly for someone new to TypeScript, JavaScript, and web development.
+- Avoid Java comparisons unless the user explicitly asks for them.
+- When a term like `typeof`, `async`, `await`, `null`, `undefined`, `interface`, or `union type` appears, define it briefly in context.
+- Prefer real examples from this repo over abstract examples when possible.
+- Focus on the data flow: input, validation, processing, response, and errors.
+- When showing code, prefer short annotated snippets and call out why a line matters.
+
 ## Code Style
 - TypeScript + ESM is required (`"type": "module"` in `package.json`).
 - In TS files, keep `.js` extensions in local imports (example: `src/index.ts`, `src/routes/index.ts`).
+- Never store functions in `const` variables (for example, `const fn = () => {}` or `const fn = function () {}`).
+- Always use function declarations instead (for example, `function fn() {}` or `async function fn() {}`).
 - Keep route handlers in `src/controllers/*.ts` and routers in `src/routes/*.ts`; handlers are async and return JSON.
 - Validate request bodies early and return immediately on failure (`src/controllers/auth.ts`, `src/controllers/youtube.ts`).
-- Use the logger from `src/lib/logger.ts`: `logger.info('message')` and `logger.error('context', error)`. Never use raw `console.log` for application logging.
+- Use the logger from `src/lib/logger.ts`: `logger.info('message')` and `logger.error('context', error)`. Never use raw `console.log` for application logging, only for testing.
 
 ## Architecture
 - Entry point is `src/index.ts`: sets CORS headers, enables JSON, serves `public/`, and mounts API under `/api`.
@@ -50,6 +61,11 @@
 - CORS is currently permissive (`*`) in `src/index.ts`; do not tighten/alter without explicit product requirement.
 
 ## Documentation Authoring Rules
+- Treat the backend code as the source of truth for API behavior.
+- Keep frontend-facing docs strictly aligned with the current implementation.
+- If docs and code differ, call out the mismatch and update the docs in the same change whenever feasible.
+- Include request body shapes, response shapes, status codes, and error cases for API docs.
+- Prefer real request/response examples taken from the current routes and controllers.
 - Documentation lives in `docs/` and must be indexed from `README.md` in the **Documentation** section.
 - Keep one topic per file and use lowercase names such as `setup.md` and `api.md`.
 - Write docs to be beginner-friendly first: explain concepts before details, avoid jargon when possible, and define required terms on first use.

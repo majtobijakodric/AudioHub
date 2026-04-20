@@ -5,16 +5,20 @@ import { existsSync, mkdirSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { logger } from '../lib/logger.js';
 
+// Make a CommonJS-style require function so this ESM file can load older packages.
 const require = createRequire(import.meta.url);
+
+// Load the yt-dlp wrapper package
 const YTDlpWrap = require('yt-dlp-wrap').default;
 
-// Shared yt-dlp wrapper instance.
+// Create one downloader instance and reuse it
 const ytDlp = new YTDlpWrap();
 
 // Directory where downloaded audio files are stored.
+// This is a relative path from the project root, but we resolve it to an absolute path for safety.
 const SONGS_DIR = path.resolve('data/songs');
 
-// Ensure the songs directory exists on startup.
+// Ensure the songs directory exists on startup. Recursive is used to create any missing parent directories
 if (!existsSync(SONGS_DIR)) {
     mkdirSync(SONGS_DIR, { recursive: true });
 }
@@ -52,9 +56,10 @@ function buildProgressLabel(videoId: string, title: unknown): string {
     return `[${videoId}] ${preview}`;
 }
 
-export const downloadSong = async (req: Request, res: Response) => {
+export async function downloadSong(req: Request, res: Response) {
     try {
-        const { videoId, title, author, durationSeconds, durationTimestamp, thumbnail } = req.body;
+        
+        const { videoId, title, durationSeconds, durationTimestamp, thumbnail } = req.body;
 
         // Validate that videoId is provided and is a non-empty string
         if (typeof videoId !== 'string' || videoId.trim().length === 0) {
@@ -67,8 +72,7 @@ export const downloadSong = async (req: Request, res: Response) => {
 
         // Check if the song already exists in the database
         const existingSong = await prismaClient.song.findUnique({
-            where: { videoId: trimmedVideoId },
-            include: { author: true }
+            where: { videoId: trimmedVideoId }
         });
 
         if (existingSong) {
@@ -76,26 +80,14 @@ export const downloadSong = async (req: Request, res: Response) => {
             if (existsSync(existingSong.filePath)) {
                 res.status(200).json({
                     message: 'Song already downloaded',
-                    song: existingSong
+                    song: {
+                        videoId: existingSong.videoId,
+                        title: existingSong.title,
+                    }
                 });
                 return;
             }
             // If DB record exists but file is missing, continue to re-download below
-        }
-
-        // Find or create the author record
-        const authorName = typeof author === 'string' && author.trim().length > 0
-            ? author.trim()
-            : 'Unknown';
-
-        let authorRecord = await prismaClient.author.findFirst({
-            where: { name: authorName }
-        });
-
-        if (!authorRecord) {
-            authorRecord = await prismaClient.author.create({
-                data: { name: authorName }
-            });
         }
 
         // Download audio from YouTube using yt-dlp
@@ -136,8 +128,7 @@ export const downloadSong = async (req: Request, res: Response) => {
                     filePath,
                     status: 'downloaded',
                     downloadedAt: new Date()
-                },
-                include: { author: true }
+                }
             });
         } else {
             // Create a new song record
@@ -145,15 +136,13 @@ export const downloadSong = async (req: Request, res: Response) => {
                 data: {
                     videoId: trimmedVideoId,
                     title: typeof title === 'string' ? title.trim() : 'Untitled',
-                    authorId: authorRecord.id,
                     durationSeconds: typeof durationSeconds === 'number' ? durationSeconds : 0,
                     durationTimestamp: typeof durationTimestamp === 'string' ? durationTimestamp : '0:00',
                     filePath,
                     thumbnail: typeof thumbnail === 'string' ? thumbnail : null,
                     status: 'downloaded',
                     downloadedAt: new Date()
-                },
-                include: { author: true }
+                }
             });
         }
 
@@ -163,10 +152,10 @@ export const downloadSong = async (req: Request, res: Response) => {
             ? 'Song re-downloaded (file was missing)'
             : 'Song downloaded successfully';
 
-        res.status(statusCode).json({ message, song });
+        res.status(statusCode).json({ message, song: { videoId: song.videoId, title: song.title } });
 
     } catch (error) {
         logger.error('Song download failed', error);
         res.status(500).json({ message: 'Internal server error' });
     }
-};
+}

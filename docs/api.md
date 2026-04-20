@@ -174,7 +174,6 @@ Takes a YouTube video ID and song info, downloads the audio, saves the file, and
 {
   "videoId": "dQw4w9WgXcQ",
   "title": "Rick Astley - Never Gonna Give You Up",
-  "author": "Rick Astley",
   "durationSeconds": 212,
   "durationTimestamp": "3:32",
   "thumbnail": "https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg"
@@ -191,7 +190,6 @@ Status: `201 Created`
     "id": 1,
     "videoId": "dQw4w9WgXcQ",
     "title": "Rick Astley - Never Gonna Give You Up",
-    "authorId": 1,
     "durationSeconds": 212,
     "durationTimestamp": "3:32",
     "filePath": "/home/user/audiohub/data/songs/dQw4w9WgXcQ.opus",
@@ -200,12 +198,7 @@ Status: `201 Created`
     "downloadedAt": "2026-04-13T20:10:00.000Z",
     "lastListenedAt": null,
     "createdAt": "2026-04-13T20:10:00.000Z",
-    "updatedAt": "2026-04-13T20:10:00.000Z",
-    "author": {
-      "id": 1,
-      "name": "Rick Astley",
-      "createdAt": "2026-04-13T20:10:00.000Z"
-    }
+    "updatedAt": "2026-04-13T20:10:00.000Z"
   }
 }
 ```
