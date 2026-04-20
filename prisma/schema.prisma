@@ -23,7 +23,6 @@ model Song {
   videoId           String     @unique
   title             String
   durationSeconds   Int        @default(0)
-  durationTimestamp  String     @default("0:00")
   filePath          String
   thumbnail         String?
   status            SongStatus @default(downloaded)

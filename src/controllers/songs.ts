@@ -25,6 +25,12 @@ if (!existsSync(SONGS_DIR)) {
 
 const TITLE_PREVIEW_LENGTH = 28;
 
+type SongData = {
+    title: string;
+    durationSeconds: number;
+    thumbnail: string | null;
+};
+
 function formatBytes(value: number | undefined): string {
     if (!Number.isFinite(value) || value === undefined || value < 0) {
         return 'unknown';
@@ -58,8 +64,8 @@ function buildProgressLabel(videoId: string, title: unknown): string {
 
 export async function downloadSong(req: Request, res: Response) {
     try {
-        
-        const { videoId, title, durationSeconds, durationTimestamp, thumbnail } = req.body;
+
+        const { videoId } = req.body;
 
         // Validate that videoId is provided and is a non-empty string
         if (typeof videoId !== 'string' || videoId.trim().length === 0) {
@@ -90,12 +96,23 @@ export async function downloadSong(req: Request, res: Response) {
             // If DB record exists but file is missing, continue to re-download below
         }
 
+        let songData: SongData;
+
+        try {
+            songData = await fetchSongData(trimmedVideoId);
+        } catch (metadataError) {
+            logger.error('yt-dlp metadata fetch failed', metadataError);
+            res.status(502).json({ message: 'Failed to fetch video metadata from YouTube' });
+            return;
+        }
+
         // Download audio from YouTube using yt-dlp
         const videoUrl = `https://www.youtube.com/watch?v=${trimmedVideoId}`;
-        const progressLabel = buildProgressLabel(trimmedVideoId, title);
+        const progressLabel = buildProgressLabel(trimmedVideoId, songData.title);
         const downloadStartedAt = Date.now();
 
         try {
+            // Use yt-dlp to download the audio file
             await ytDlp.execPromise([
                 videoUrl,
                 '-x',
@@ -131,15 +148,14 @@ export async function downloadSong(req: Request, res: Response) {
                 }
             });
         } else {
-            // Create a new song record
+            // Create a new song record in DB
             song = await prismaClient.song.create({
                 data: {
                     videoId: trimmedVideoId,
-                    title: typeof title === 'string' ? title.trim() : 'Untitled',
-                    durationSeconds: typeof durationSeconds === 'number' ? durationSeconds : 0,
-                    durationTimestamp: typeof durationTimestamp === 'string' ? durationTimestamp : '0:00',
+                    title: songData.title,
+                    durationSeconds: songData.durationSeconds,
                     filePath,
-                    thumbnail: typeof thumbnail === 'string' ? thumbnail : null,
+                    thumbnail: songData.thumbnail,
                     status: 'downloaded',
                     downloadedAt: new Date()
                 }
@@ -148,9 +164,7 @@ export async function downloadSong(req: Request, res: Response) {
 
         // Return the song record with appropriate status code and message
         const statusCode = isRedownload ? 200 : 201;
-        const message = isRedownload
-            ? 'Song re-downloaded (file was missing)'
-            : 'Song downloaded successfully';
+        const message = isRedownload ? 'Song re-downloaded (file was missing)' : 'Song downloaded successfully';
 
         res.status(statusCode).json({ message, song: { videoId: song.videoId, title: song.title } });
 
@@ -158,4 +172,37 @@ export async function downloadSong(req: Request, res: Response) {
         logger.error('Song download failed', error);
         res.status(500).json({ message: 'Internal server error' });
     }
+}
+
+async function fetchSongData(videoId: string): Promise<SongData> {
+    const rawMetadata = await ytDlp.execPromise([
+        `https://www.youtube.com/watch?v=${videoId}`,
+        '--dump-single-json',
+        '--skip-download',
+        '--no-playlist'
+    ]);
+
+    const metadata = JSON.parse(rawMetadata) as {
+        title?: unknown;
+        duration?: unknown;
+        thumbnail?: unknown;
+    };
+
+    const safeTitle = typeof metadata.title === 'string' && metadata.title.trim().length > 0 
+        ? metadata.title.trim()
+        : 'Untitled';
+
+    const safeDurationSeconds = typeof metadata.duration === 'number' && Number.isFinite(metadata.duration) && metadata.duration >= 0
+        ? Math.floor(metadata.duration)
+        : 0;
+
+    const safeThumbnail = typeof metadata.thumbnail === 'string' && metadata.thumbnail.trim().length > 0
+        ? metadata.thumbnail.trim()
+        : null;
+
+    return {
+        title: safeTitle,
+        durationSeconds: safeDurationSeconds,
+        thumbnail: safeThumbnail
+    };
 }

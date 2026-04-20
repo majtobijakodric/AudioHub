@@ -4,11 +4,7 @@ POST http://localhost:8080/api/songs/download
 Content-Type: application/json
 
 {
-    "videoId": "dQw4w9WgXcQ",
-    "title": "Rick Astley - Never Gonna Give You Up",
-    "durationSeconds": 212,
-    "durationTimestamp": "3:32",
-    "thumbnail": "https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg"
+    "videoId": "mbsmsi7l3r4"
 }
 
 ### Download same song again (duplicate check)
@@ -16,11 +12,7 @@ POST http://localhost:8080/api/songs/download
 Content-Type: application/json
 
 {
-    "videoId": "UBUNrFtufWo",
-    "title": "Rick Astley - Never Gonna Give You Up",
-    "durationSeconds": 212,
-    "durationTimestamp": "3:32",
-    "thumbnail": "https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg"
+    "videoId": "UBUNrFtufWo"
 }
 
 ### Download song (missing videoId)

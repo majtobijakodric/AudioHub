@@ -167,16 +167,12 @@ Status: `200 OK`
 Downloads a song from YouTube and stores it in the backend.
 
 ### What it does
-Takes a YouTube video ID and song info, downloads the audio, saves the file, and stores the song in the database.
+Takes only a YouTube video ID, fetches metadata on the server, downloads the audio, saves the file, and stores the song in the database.
 
 ### Request body
 ```json
 {
-  "videoId": "dQw4w9WgXcQ",
-  "title": "Rick Astley - Never Gonna Give You Up",
-  "durationSeconds": 212,
-  "durationTimestamp": "3:32",
-  "thumbnail": "https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg"
+  "videoId": "dQw4w9WgXcQ"
 }
 ```
 
@@ -191,7 +187,6 @@ Status: `201 Created`
     "videoId": "dQw4w9WgXcQ",
     "title": "Rick Astley - Never Gonna Give You Up",
     "durationSeconds": 212,
-    "durationTimestamp": "3:32",
     "filePath": "/home/user/audiohub/data/songs/dQw4w9WgXcQ.opus",
     "thumbnail": "https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg",
     "status": "downloaded",
@@ -218,12 +213,15 @@ Status: `200 OK`
 
 ### Common errors
 - `400 Bad Request`: `videoId` is missing or empty
+- `502 Bad Gateway`: metadata fetch from YouTube failed
 - `502 Bad Gateway`: download from YouTube failed
 - `500 Internal Server Error`: unexpected server problem
 
 ### Frontend note
 - Call this after the user chooses a YouTube result.
-- Pass the same song data returned by `/youtube/search` when possible.
+- Send only `videoId`.
+- The backend fetches and trusts metadata from YouTube (not from client input).
+- The frontend should format `durationSeconds` for display (for example, `212` -> `3:32`).
 - The audio file is stored by the backend in `data/songs/`.
 
 ## Test Files
