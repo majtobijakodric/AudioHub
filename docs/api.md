@@ -168,6 +168,7 @@ Downloads a song from YouTube and stores it in the backend.
 
 ### What it does
 Takes only a YouTube video ID, fetches metadata on the server, downloads the audio, saves the file, and stores the song in the database.
+Rejects videos longer than 1 hour.
 
 ### Request body
 ```json
@@ -213,6 +214,7 @@ Status: `200 OK`
 
 ### Common errors
 - `400 Bad Request`: `videoId` is missing or empty
+- `400 Bad Request`: video is too long (over 1 hour)
 - `502 Bad Gateway`: metadata fetch from YouTube failed
 - `502 Bad Gateway`: download from YouTube failed
 - `500 Internal Server Error`: unexpected server problem

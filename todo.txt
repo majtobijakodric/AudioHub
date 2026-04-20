@@ -1,1 +1,1 @@
-add api call to return all downloaded songs
+add auth

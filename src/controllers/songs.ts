@@ -100,6 +100,12 @@ export async function downloadSong(req: Request, res: Response) {
 
         try {
             songData = await fetchSongData(trimmedVideoId);
+
+            // If song longer than an hour, reject
+            if (songData.durationSeconds > 3600) {
+                res.status(400).json({ message: 'Video is too long (over 1 hour)' });
+                return;
+            }
         } catch (metadataError) {
             logger.error('yt-dlp metadata fetch failed', metadataError);
             res.status(502).json({ message: 'Failed to fetch video metadata from YouTube' });
