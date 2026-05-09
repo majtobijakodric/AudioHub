@@ -71,6 +71,7 @@ export async function searchYouTubeSong({ name, limit = 5, fast = false }: Searc
     // true faster, less data
     // false slower, more data
 
+    // this 'fast' variable is useless now because it was needed just because it gave back thumbnail, but that can be crafted with video id
     flatPlaylist: fast,
   });
 

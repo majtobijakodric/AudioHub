@@ -11,3 +11,4 @@ export function isEmptyString(x: string): boolean {
 export function logWithTime(message: string): void {
     console.log(`${new Date().toLocaleTimeString('en-GB')} ${message}`)
 }
+

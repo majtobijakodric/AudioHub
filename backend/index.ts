@@ -66,10 +66,7 @@ function logRequest(route: string) {
     }
 }
 
-
-
 app.get('/', logRequest("/"), (req, res) => {
-
     if (req.isAuthenticated()) {
         return res.redirect("/home")
     }
@@ -221,7 +218,32 @@ app.get("/getallsongs", logRequest("/getallsongs"), checkAuthenticated, async (r
     }
 })
 
-app.get("play", logRequest("/play"))
+app.get("/play", logRequest("/play"), checkAuthenticated, async (req: Request, res: Response) => {
+
+    // return a song file based on song id parameter
+    try {
+        const songId = req.query.id
+        logWithTime(`[PLAY] play api called for song id: ${songId}`)
+
+        if (!isString(songId) || isEmptyString(songId)) {
+            res.status(400).send({ success: false, message: "Missing song id" })
+            return
+        }
+
+        // check if the song exissts in the database
+        if (!await isInDatabase(songId)) {
+            res.status(404).send({ success: false, message: "Song not found" })
+            return
+        }
+
+        const songPath = path.join(FOLDER, `${songId}.mp3`)
+
+        res.sendFile(songPath)
+    } catch (error) {
+        logWithTime(`[PLAY] failed to send a song: ${error}`)
+        res.status(500).send({ success: false, message: "Failed to play song" })
+    }
+})
 
 function start() {
     // Optionally use onReady() to get a promise that resolves when store is ready.
