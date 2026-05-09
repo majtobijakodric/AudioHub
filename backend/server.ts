@@ -13,8 +13,8 @@ import passport from "passport"
 import { prisma } from "../lib/prisma" // prisma adapter so you can talk to the db
 
 const app = express()
-const PORT = 3000
-export const FOLDER = "songs"
+const PORT = process.env.PORT || 8080 // set the port in .env
+export const FOLDER = "data/songs" // songs are stored here
 
 const MySQLSessionStore = MySQLStore(session)
 
