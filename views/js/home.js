@@ -3,7 +3,7 @@ const loadingGif = "/assets/loading.gif"
 const searchBar = document.getElementById("searchBar")
 const searchInput = document.getElementById("search")
 
-const TIME_OUT_TIME = 400;
+const TIME_OUT_TIME = 400; // keystroke timeout
 
 let searchTimeout
 
@@ -23,6 +23,7 @@ searchInput.addEventListener("input", () => {
   }, TIME_OUT_TIME)
 })
 
+// prevent refreshing the site when enter is pressed in the searchbar
 searchBar.addEventListener("submit", (e) => {
   e.preventDefault();
 })
@@ -36,6 +37,14 @@ document.addEventListener("click", (e) => {
 
   hideSearchBar()
 })
+
+function hideSearchBar() {
+  const searchBarPopup = document.getElementById("searchBarPopup")
+
+  if (searchBarPopup) {
+    searchBarPopup.remove()
+  }
+}
 
 async function getAllSongs() {
   try {
@@ -108,14 +117,6 @@ async function putSongOnScrean(songs) {
   })
 }
 
-function hideSearchBar() {
-  const searchBarPopup = document.getElementById("searchBarPopup")
-
-  if (searchBarPopup) {
-    searchBarPopup.remove()
-  }
-}
-
 function showSearchLoading(searchBarPopup) {
   const loadingImg = document.createElement("img")
 
@@ -167,11 +168,18 @@ async function searchBarShow() {
       return
     }
 
+    const MAX_TITLE_LENGTH = 50 // Maximum title length before truncation
+
     results.forEach((song) => {
       const songButton = document.createElement("button")
       songButton.type = "button"
       songButton.classList.add("block", "w-full", "rounded-xl", "border-transparent", "px-4", "py-3", "text-left", "text-sm", "text-amber-50", "hover:bg-white/5", "cursor-pointer")
-      songButton.textContent = song.title
+      
+      if (song.title.length > MAX_TITLE_LENGTH) {
+        songButton.textContent = `${song.title.substr(0, MAX_TITLE_LENGTH)}...`
+      } else {
+        songButton.textContent = song.title
+      }
 
       searchBarPopup.appendChild(songButton)
 
