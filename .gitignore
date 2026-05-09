@@ -3,5 +3,5 @@ node_modules
 .env
 .codex
 /generated/prisma
-songs/*
-!songs/.gitkeep
+data/songs/*
+!data/songs/.gitkeep
