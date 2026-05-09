@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/fontawesome/css/all.min.css">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <title>Register</title>
+</head>
+
+<body class="min-h-screen bg-[#121212] text-white">
+    <main class="grid min-h-screen place-items-center px-6 py-10">
+        <section class="w-full max-w-md rounded-lg bg-[#181818] px-8 py-10 shadow-2xl ring-1 ring-[#282828]">
+            <div class="mb-8 text-center">
+                <img class="mx-auto mb-5 h-14 w-14 rounded-full" src="assets/favicon.svg" alt="AudioHub logo">
+                <h1 class="text-3xl font-bold">Sign up for AudioHub</h1>
+            </div>
+
+            <% if (errors && errors.length> 0) { %>
+                <div class="mb-5 rounded-md border border-red-600 bg-red-600/10 px-4 py-3 text-sm font-medium text-red-200">
+                    <i class="fa-solid fa-circle-exclamation mr-2" aria-hidden="true"></i>
+                    <%= errors[0] %>
+                </div>
+                <% } %>
+
+                    <form class="grid gap-5" action="/register" method="POST">
+                        <div class="grid gap-2">
+                            <label class="text-sm font-bold" for="username">Username</label>
+                            <div class="flex items-center gap-3 rounded-md border border-[#727272] bg-[#121212] px-3 transition focus-within:border-white">
+                                <i class="fa-solid fa-user text-[#b3b3b3]" aria-hidden="true"></i>
+                                <input class="min-h-12 w-full text-white outline-none placeholder:text-[#727272]" type="text"
+                                    id="username" name="username" placeholder="Username" required>
+                            </div>
+                        </div>
+
+                        <div class="grid gap-2">
+                            <label class="text-sm font-bold" for="password">Password</label>
+                            <div class="flex items-center gap-3 rounded-md border border-[#727272] bg-[#121212] px-3 transition focus-within:border-white">
+                                <i class="fa-solid fa-lock text-[#b3b3b3]" aria-hidden="true"></i>
+                                <input class="min-h-12 w-full text-white outline-none placeholder:text-[#727272]"
+                                    type="password" id="password" name="password" placeholder="Password" required>
+                            </div>
+                        </div>
+
+                        <button
+                            class="mt-2 min-h-12 rounded-full bg-[#1DB954] px-6 font-bold text-black transition hover:scale-[1.02] hover:bg-[#1ed760] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#181818]"
+                            type="submit">
+                            Register
+                        </button>
+                    </form>
+
+                    <div class="mt-8 border-t border-[#282828] pt-6 text-center text-sm text-[#b3b3b3]">
+                        <span>Already have an account?</span>
+                        <a class="font-bold text-white underline decoration-[#727272] underline-offset-4 transition hover:decoration-white"
+                            href="/login">Login</a>
+                    </div>
+        </section>
+    </main>
+
+</body>
+
+</html>

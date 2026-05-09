@@ -1,0 +1,40 @@
+###
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "username": "maj",
+    "password": "123"
+}
+
+
+###
+POST http://localhost:3000/register
+Content-Type: application/json
+
+{
+    "username": "maj",
+    "password": "42342aa"
+}
+
+
+###
+POST http://localhost:3000/ytsearch
+Content-Type: application/json
+
+{
+    "songname": "ladie gaga",
+    "count": 10,
+    "fast": true
+}
+
+###
+POST http://localhost:3000/downloadsong
+Content-Type: application/json
+
+{
+    "url": "https://www.youtube.com/watch?v=XXIX2WnfbpE"
+}
+
+###
+GET http://localhost:3000/getallsongs

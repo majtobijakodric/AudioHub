@@ -1,42 +1,48 @@
 {
-  "name": "audiohub",
+  "name": "prisma-ucenje",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx nodemon"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/majtobijakodric/audiohub.git"
+    "dev": "nodemon backend/server.ts",
+    "prisma-migrate-generate": "npx prisma migrate dev && npx prisma generate",
+    "gen-tailwind": "npx @tailwindcss/cli -i ./views/css/style.css -o ./views/css/output.css --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
-  "bugs": {
-    "url": "https://github.com/majtobijakodric/audiohub/issues"
-  },
-  "homepage": "https://github.com/majtobijakodric/audiohub#readme",
+  "type": "commonjs",
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
-    "@types/express": "^5.0.6",
-    "@types/jsonwebtoken": "^9.0.10",
-    "express": "^5.2.1",
-    "ts-node": "^10.9.2"
+    "@types/node": "^25.6.0",
+    "dotenv": "^17.4.2",
+    "nodemon": "^3.1.14",
+    "prisma": "^7.8.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@prisma/adapter-mariadb": "^7.4.0",
-    "@prisma/client": "^7.4.0",
-    "@types/yt-search": "^2.10.3",
+    "@fortawesome/fontawesome-free": "^7.2.0",
+    "@prisma/adapter-mariadb": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "@tailwindcss/cli": "^4.2.4",
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.6",
+    "@types/express-flash": "^0.0.5",
+    "@types/express-mysql-session": "^3.0.8",
+    "@types/express-session": "^1.19.0",
+    "@types/passport": "^1.0.17",
+    "@types/passport-local": "^1.0.38",
     "bcrypt": "^6.0.0",
-    "dotenv": "^17.2.4",
-    "jsonwebtoken": "^9.0.3",
-    "mariadb": "^3.4.5",
-    "nodemon": "^3.1.11",
-    "prisma": "^7.4.0",
-    "typescript": "^5.9.3",
-    "yt-dlp-wrap": "^2.3.12",
-    "yt-search": "^2.13.1"
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "express-flash": "^0.0.2",
+    "express-mysql-session": "^3.0.3",
+    "express-session": "^1.19.0",
+    "mariadb": "^3.5.2",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "tailwindcss": "^4.2.4",
+    "yt-dlp-exec": "^1.0.2"
   }
 }

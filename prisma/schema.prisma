@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -8,33 +9,18 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("users")
+  id             String @id @default(uuid())
+  username       String @unique
+  hashedPassword String
 }
 
 model Song {
-  id                Int        @id @default(autoincrement())
-  videoId           String     @unique
-  title             String
-  durationSeconds   Int        @default(0)
-  filePath          String
-  thumbnail         String?
-  status            SongStatus @default(downloaded)
-  downloadedAt      DateTime?
-  lastListenedAt    DateTime?
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
-
-  @@map("songs")
-}
-
-enum SongStatus {
-  downloaded
-  notDownloaded
+  id           String   @id
+  title        String
+  duration     Int
+  channelName  String
+  thumbnailURL String
+  diskPath     String
+  url          String
+  uploadDate   DateTime @default(now())
 }

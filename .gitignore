@@ -1,10 +1,7 @@
-node_modules/
-dist/
+node_modules
+# Keep environment variables out of version control
 .env
-.vscode/
 .codex
-src/generated/prisma/
-data/songs/*
-!data/songs/.gitkeep
-logs/*
-!logs/.gitkeep
+/generated/prisma
+songs/*
+!songs/.gitkeep

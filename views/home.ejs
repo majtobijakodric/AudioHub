@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AudioHub - home</title>
+    <link rel="stylesheet" href="/css/output.css" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+</head>
+
+<body class="min-h-screen w-full bg-black text-amber-50">
+    <!-- this div is for the bg shadow effect when you open a menu -->
+    <!-- add classes to it in js -->
+    <div id="mainDiv" class="min-h-screen w-full grid grid-rows-[5rem_1fr_5rem]">
+        <header class="border-0 rounded-2xl m-2 grid grid-cols-3 items-center bg-[#181818]">
+            <!-- left -->
+            <div class="justify-self-start pl-2">
+                <a href="/">
+                    <img class="h-12 w-12 object-contain" src="assets/favicon.svg" alt="AudioHub" />
+                </a>
+            </div>
+
+            <!-- center -->
+            <div class="flex justify-center">
+                <form class="w-full max-w-3xl" action="" method="post" id="searchBar">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg class="h-4 w-4 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                                    d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
+                            </svg>
+                        </div>
+                        <input id="search" class="border border-gray-400 rounded-4xl h-12 px-4 pl-9 w-full" type="text"
+                            placeholder="Search for a song" />
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right -->
+            <div class="justify-self-end pr-2">
+                <!-- add user profile popup -->
+                <a href="">
+                    <img class="h-12 w-12 object-contain" src="assets/favicon.svg" alt="user" />
+                </a>
+            </div>
+        </header>
+
+        <main class="flex">
+            <aside class="m-2 w-2xs  border-0 rounded-2xl bg-[#181818]"></aside>
+            <section class="m-2 ml-0 w-full border-0 rounded-2xl bg-[#181818]">
+                <!-- here songs get shown with fetch /getallsongs api -->
+                <ul id="songsList" class="m-2">
+                    <!-- songs are added in js -->
+                </ul>
+            </section>
+        </main>
+
+        <footer class="border-0 rounded-2xl m-2 bg-[#181818]"></footer>
+    </div>
+</body>
+<script defer src="js/home.js"></script>
+
+</html>
