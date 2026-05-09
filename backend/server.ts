@@ -56,6 +56,13 @@ app.use(express.static(path.join(__dirname, "../views")))
 // so you can see icons in html
 app.use("/fontawesome", express.static(path.join(__dirname, "../node_modules/@fortawesome/fontawesome-free")))
 
+function logRequest(route: string) {
+    return (req: Request, res: Response, next: NextFunction) => {
+        console.log(`[${route}] from: ${req.ip}`)
+        next()
+    }
+}
+
 // move to auth.ts sometime soon
 function checkAuthenticated(req: Request, res: Response, next: NextFunction) {
     if (req.isAuthenticated()) {
@@ -74,7 +81,8 @@ function checkNotAuthenticated(req: Request, res: Response, next: NextFunction) 
     next()
 }
 
-app.get('/', (req, res) => {
+app.get('/', logRequest("/"), (req, res) => {
+
     if (req.isAuthenticated()) {
         return res.redirect("/home")
     }
@@ -82,23 +90,23 @@ app.get('/', (req, res) => {
     res.redirect("/login")
 })
 
-app.get('/login', checkNotAuthenticated, (req, res) => {
+app.get('/login', logRequest("/login"), checkNotAuthenticated, (req, res) => {
     res.render("login")
 })
 
-app.post('/login', checkNotAuthenticated, passport.authenticate("local", {
+app.post('/login', logRequest("/login"), checkNotAuthenticated, passport.authenticate("local", {
     successRedirect: "/home",
     failureRedirect: "/login",
     failureFlash: true
 }))
 
-app.get("/home", checkAuthenticated, (req: Request, res: Response) => {
+app.get("/home", logRequest("/home"), checkAuthenticated, (req: Request, res: Response) => {
     res.render("home", {
         name: (req.user as { username: string }).username
     })
 })
 
-app.post("/logout", (req: Request, res: Response, next: NextFunction) => {
+app.post("/logout", logRequest("/logout"), (req: Request, res: Response, next: NextFunction) => {
     req.logOut((error) => {
         if (error) return next(error)
 
@@ -106,13 +114,13 @@ app.post("/logout", (req: Request, res: Response, next: NextFunction) => {
     })
 })
 
-app.get("/register", checkNotAuthenticated, (req: Request, res: Response) => {
+app.get("/register", logRequest("/register"), checkNotAuthenticated, (req: Request, res: Response) => {
     res.render("register", {
         errors: req.flash("error")
     })
 })
 
-app.post('/register', checkNotAuthenticated, async (req: Request, res: Response) => {
+app.post('/register', logRequest("/register"), checkNotAuthenticated, async (req: Request, res: Response) => {
     console.log(`[REGISTER] register api called`)
 
     const { username, password } = req.body
@@ -139,7 +147,7 @@ app.post('/register', checkNotAuthenticated, async (req: Request, res: Response)
     }
 })
 
-app.post("/ytsearch", checkAuthenticated, async (req: Request, res: Response) => {
+app.post("/ytsearch", logRequest("/ytsearch"), checkAuthenticated, async (req: Request, res: Response) => {
 
     try {
         const songname = req.body.songname
@@ -166,7 +174,7 @@ app.post("/ytsearch", checkAuthenticated, async (req: Request, res: Response) =>
     }
 })
 
-app.post("/downloadsong", checkAuthenticated, async (req: Request, res: Response) => {
+app.post("/downloadsong", logRequest("/downloadsong"), checkAuthenticated, async (req: Request, res: Response) => {
     try {
         const url = req.body.url
         console.log(`[YTDOWNLOAD] starting downloading song: ${url}`)
@@ -210,7 +218,7 @@ app.post("/downloadsong", checkAuthenticated, async (req: Request, res: Response
 
 })
 
-app.get("/getallsongs", checkAuthenticated, async (req: Request, res: Response) => {
+app.get("/getallsongs", logRequest("/getallsongs"), checkAuthenticated, async (req: Request, res: Response) => {
     // this is used at start to fetch all songs 
     try {
         console.log("[ALLSONGS] getallsongs api called")
