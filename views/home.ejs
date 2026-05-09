@@ -13,6 +13,24 @@
     <!-- this div is for the bg shadow effect when you open a menu -->
     <!-- add classes to it in js -->
     <div id="mainDiv" class="min-h-screen w-full grid grid-rows-[5rem_1fr_5rem]">
+
+        <!-- user menu -->
+        <div id="userMenu" class="fixed hidden z-100 w-screen h-screen">
+            <div class="flex items-center justify-center w-full h-full bg-black/60">
+                <div
+                    class="relative z-10 border-2 rounded-lg p-6 bg-[#181818] flex flex-col gap-1 justify-center h-90 w-80 ">
+
+                    <!-- logout button -->
+                    <div class="mt-auto flex w-full justify-center">
+                        <form action="/logout" method="POST">
+                            <button type="submit"
+                                class="cursor-pointer bg-[#28B556] border rounded-4xl p-2 pl-10 pr-10">LogOut</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <header class="border-0 rounded-2xl m-2 grid grid-cols-3 items-center bg-[#181818]">
             <!-- left -->
             <div class="justify-self-start pl-2">
@@ -39,17 +57,21 @@
             </div>
 
             <!-- Right -->
-            <div class="justify-self-end pr-2">
+            <div class="justify-self-end pr-2 z-110">
                 <!-- add user profile popup -->
-                <a href="">
+                <a onclick="toggleUserMenu()" class="cursor-pointer z-110">
                     <img class="h-12 w-12 object-contain" src="assets/favicon.svg" alt="user" />
                 </a>
             </div>
         </header>
 
         <main class="flex min-h-0">
-            <aside class="m-2 w-2xs min-h-0 max-h-[calc(100vh-11rem)] border-0 rounded-2xl bg-[#181818] overflow-y-auto scrollbar scrollbar-w-2 scrollbar-track-[#101010] scrollbar-thumb-amber-50/20 scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-hover:scrollbar-thumb-amber-50/50 scrollbar-active:scrollbar-thumb-amber-50/70"></aside>
-            <section class="m-2 ml-0 w-full min-h-0 max-h-[calc(100vh-11rem)] border-0 rounded-2xl bg-[#181818] overflow-y-auto scrollbar scrollbar-w-2 scrollbar-track-[#101010] scrollbar-thumb-amber-50/20 scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-hover:scrollbar-thumb-amber-50/50 scrollbar-active:scrollbar-thumb-amber-50/70">
+            <aside
+                class="m-2 w-2xs min-h-0 max-h-[calc(100vh-11rem)] border-0 rounded-2xl bg-[#181818] overflow-y-auto scrollbar scrollbar-w-2 scrollbar-track-[#101010] scrollbar-thumb-amber-50/20 scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-hover:scrollbar-thumb-amber-50/50 scrollbar-active:scrollbar-thumb-amber-50/70">
+                <ul id="playListPlace"></ul>
+            </aside>
+            <section
+                class="m-2 ml-0 w-full min-h-0 max-h-[calc(100vh-11rem)] border-0 rounded-2xl bg-[#181818] overflow-y-auto scrollbar scrollbar-w-2 scrollbar-track-[#101010] scrollbar-thumb-amber-50/20 scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-hover:scrollbar-thumb-amber-50/50 scrollbar-active:scrollbar-thumb-amber-50/70">
                 <!-- here songs get shown with fetch /getallsongs api -->
                 <ul id="songsList" class="m-2 pr-2">
                     <!-- songs are added in js -->
@@ -60,6 +82,8 @@
         <footer class="border-0 rounded-2xl m-2 bg-[#181818]"></footer>
     </div>
 </body>
+
 <script defer src="js/home.js"></script>
+<script defer src="js/userMenu.js"></script>
 
 </html>
