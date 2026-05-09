@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon backend/server.ts",
+    "dev": "nodemon backend/index.ts",
     "prisma-migrate-generate": "npx prisma migrate dev && npx prisma generate",
     "gen-tailwind": "npx @tailwindcss/cli -i ./views/css/style.css -o ./views/css/output.css --watch"
   },

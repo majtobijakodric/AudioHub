@@ -1,4 +1,4 @@
-import { createUser, initializePassport } from "./auth"
+import { createUser, initializePassport, checkAuthenticated, checkNotAuthenticated } from "./auth"
 import { isString, isEmptyString } from "./helper"
 import { searchYouTubeSong, downloadYouTubeSong, YouTubeSongData } from "./youtube"
 import express, { NextFunction, Request, Response } from 'express'
@@ -29,6 +29,7 @@ const sessionStore = new MySQLSessionStore({
 
 // form forms to work
 app.use(express.urlencoded({ extended: false }))
+
 // to pars json
 app.use(express.json())
 
@@ -40,9 +41,10 @@ app.use(session({
     saveUninitialized: false
 }))
 
-// for errors
+// for returning errors to the user (login / registration)
 app.use(flash())
 
+// passport and session
 initializePassport(passport)
 app.use(passport.initialize())
 app.use(passport.session())
@@ -63,23 +65,7 @@ function logRequest(route: string) {
     }
 }
 
-// move to auth.ts sometime soon
-function checkAuthenticated(req: Request, res: Response, next: NextFunction) {
-    if (req.isAuthenticated()) {
-        return next()
-    }
 
-    res.redirect("/login")
-}
-
-// move to auth.ts sometime soon
-function checkNotAuthenticated(req: Request, res: Response, next: NextFunction) {
-    if (req.isAuthenticated()) {
-        return res.redirect("/home")
-    }
-
-    next()
-}
 
 app.get('/', logRequest("/"), (req, res) => {
 
@@ -241,4 +227,5 @@ function start() {
     })
 }
 
+// call the start functon to start it all
 start()

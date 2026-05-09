@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { prisma } from "../lib/prisma";
-import { FOLDER } from "./server";
+import { FOLDER } from ".";
 import { YouTubeSongData } from "./youtube";
 
 // check if the song is already downloaded

@@ -2,6 +2,7 @@ import { prisma } from "../lib/prisma";
 import bcrypt from 'bcrypt';
 import { Strategy as LocalStrategy } from "passport-local";
 import type { PassportStatic } from "passport";
+import type { NextFunction, Request, Response } from "express"
 
 const SALT_ROUNDS = 10;
 
@@ -78,3 +79,18 @@ export function initializePassport(passport: PassportStatic) {
     });
 }
 
+export function checkAuthenticated(req: Request, res: Response, next: NextFunction) {
+    if (req.isAuthenticated()) {
+        return next()
+    }
+
+    res.redirect("/login")
+}
+
+export function checkNotAuthenticated(req: Request, res: Response, next: NextFunction) {
+    if (req.isAuthenticated()) {
+        return res.redirect("/home")
+    }
+
+    next()
+}
