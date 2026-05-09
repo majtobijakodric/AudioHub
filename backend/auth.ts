@@ -39,8 +39,6 @@ export async function createUser(username: string, password: string) {
         return false;
     }
 
-    console.log(`[INFO] register: added user ${username} to the database`);
-
     return (user == null) ? false : true;
 }
 

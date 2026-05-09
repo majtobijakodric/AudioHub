@@ -7,3 +7,7 @@ export function isString(x: unknown): x is string {
 export function isEmptyString(x: string): boolean {
     return x.length === 0;
 }
+
+export function logWithTime(message: string): void {
+    console.log(`${new Date().toLocaleTimeString('en-GB')} ${message}`)
+}

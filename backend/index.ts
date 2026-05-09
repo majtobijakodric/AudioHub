@@ -11,6 +11,7 @@ import { unlink } from "node:fs/promises"
 import path from "node:path"
 import passport from "passport"
 import { prisma } from "../lib/prisma" // prisma adapter so you can talk to the db
+import { logWithTime } from "./helper"
 
 const app = express()
 const PORT = Number(process.env.PORT) || 8080 // set the port in .env
@@ -60,7 +61,7 @@ app.use("/fontawesome", express.static(path.join(__dirname, "../node_modules/@fo
 
 function logRequest(route: string) {
     return (req: Request, res: Response, next: NextFunction) => {
-        console.log(`[${route}] from: ${req.ip}`)
+        logWithTime(`[${route}] from: ${req.ip}`)
         next()
     }
 }
@@ -107,7 +108,7 @@ app.get("/register", logRequest("/register"), checkNotAuthenticated, (req: Reque
 })
 
 app.post('/register', logRequest("/register"), checkNotAuthenticated, async (req: Request, res: Response) => {
-    console.log(`[REGISTER] register api called`)
+    logWithTime(`[REGISTER] register api called`)
 
     const { username, password } = req.body
 
@@ -120,15 +121,15 @@ app.post('/register', logRequest("/register"), checkNotAuthenticated, async (req
         !isEmptyString(password)
 
     if (!hasValidCredentialFormat) {
-        console.log(`[REGISTER] Invalid data:`)
+        logWithTime(`[REGISTER] Invalid data:`)
         res.status(400).send({ succes: false, message: "Missing information" })
         return
     }
     if (await createUser(username, password)) {
-        console.log(`[REGISTER] added users ${username} to the database`)
+        logWithTime(`[REGISTER] added users ${username} to the database`)
         res.redirect("login")
     } else {
-        console.log(`[REGISTER] failed to add user ${username} to the database`)
+        logWithTime(`[REGISTER] failed to add user ${username} to the database`)
         req.flash("error", "This users already exists")
         res.redirect("/register")
     }
@@ -141,7 +142,7 @@ app.post("/ytsearch", logRequest("/ytsearch"), checkAuthenticated, async (req: R
         const limit = Number(req.body.count) || 3
         const fast = req.body.fast
 
-        console.log(`[YTSEARCH] songname: ${songname}, limit: ${limit}, fast: ${fast}`)
+        logWithTime(`[YTSEARCH] songname: ${songname}, limit: ${limit}, fast: ${fast}`)
 
         if (!isString(songname) || isEmptyString(songname)) {
             res.status(400).json({ success: false, error: "Missing songname" })
@@ -156,7 +157,7 @@ app.post("/ytsearch", logRequest("/ytsearch"), checkAuthenticated, async (req: R
 
         res.json(songs)
     } catch (error) {
-        console.log("[YTSEARCH] failed:", error)
+        logWithTime(`[YTSEARCH] failed: ${error}`)
         res.status(500).json({ success: false, error: "Failed to search YouTube" })
     }
 })
@@ -164,7 +165,7 @@ app.post("/ytsearch", logRequest("/ytsearch"), checkAuthenticated, async (req: R
 app.post("/downloadsong", logRequest("/downloadsong"), checkAuthenticated, async (req: Request, res: Response) => {
     try {
         const url = req.body.url
-        console.log(`[YTDOWNLOAD] starting downloading song: ${url}`)
+        logWithTime(`[YTDOWNLOAD] starting downloading song: ${url}`)
 
         if (!isString(url) || isEmptyString(url)) {
             res.status(400).json({ success: false, error: "Missing url" })
@@ -199,34 +200,36 @@ app.post("/downloadsong", logRequest("/downloadsong"), checkAuthenticated, async
 
         res.json({ success: true, message: "Song downloaded" })
     } catch (error) {
-        console.log("[YTDOWNLOAD] failed:", error)
+        logWithTime(`[YTDOWNLOAD] failed: ${error}`)
         res.status(500).json({ success: false, error: "Failed to download song" })
     }
 
-    console.log("[YTDOWNLOAD] song downloaded and in database")
+    logWithTime("[YTDOWNLOAD] song downloaded and in database")
 
 })
 
 app.get("/getallsongs", logRequest("/getallsongs"), checkAuthenticated, async (req: Request, res: Response) => {
     // this is used at start to fetch all songs 
     try {
-        console.log("[ALLSONGS] getallsongs api called")
+        logWithTime("[ALLSONGS] getallsongs api called")
         const songs = await prisma.song.findMany()
         res.send({ success: true, songs })
 
     } catch (error) {
-        console.log(`[GETALLSONGS] internal error while gettins all songs ${error}`)
+        logWithTime(`[GETALLSONGS] internal error while gettins all songs ${error}`)
         res.status(500).send({ success: false, message: "Couldn get all songs, internal error" })
     }
 })
+
+app.get("play", logRequest("/play"))
 
 function start() {
     // Optionally use onReady() to get a promise that resolves when store is ready.
     sessionStore.onReady().then(() => {
         // MySQL session store ready for use.
-        app.listen(PORT, "0.0.0.0",  () => console.log(`[SERVER] listening on port http://localhost:${PORT}`))
+        app.listen(PORT, "0.0.0.0", () => logWithTime(`[SERVER] listening on port http://localhost:${PORT}`))
     }).catch(error => {
-        console.error(error)
+        logWithTime(`${error}`)
     })
 }
 
