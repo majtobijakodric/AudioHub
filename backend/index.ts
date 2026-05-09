@@ -13,7 +13,7 @@ import passport from "passport"
 import { prisma } from "../lib/prisma" // prisma adapter so you can talk to the db
 
 const app = express()
-const PORT = process.env.PORT || 8080 // set the port in .env
+const PORT = Number(process.env.PORT) || 8080 // set the port in .env
 export const FOLDER = "data/songs" // songs are stored here
 
 const MySQLSessionStore = MySQLStore(session)
@@ -111,14 +111,15 @@ app.post('/register', logRequest("/register"), checkNotAuthenticated, async (req
 
     const { username, password } = req.body
 
-    // check for valid username and password
-    const hasValidCredentials =
+    // check for valid username and password 
+    // doesnt check for a strong password
+    const hasValidCredentialFormat =
         isString(username) &&
         isString(password) &&
         !isEmptyString(username) &&
         !isEmptyString(password)
 
-    if (!hasValidCredentials) {
+    if (!hasValidCredentialFormat) {
         console.log(`[REGISTER] Invalid data:`)
         res.status(400).send({ succes: false, message: "Missing information" })
         return
@@ -176,10 +177,12 @@ app.post("/downloadsong", logRequest("/downloadsong"), checkAuthenticated, async
         const songData: YouTubeSongData[] = await searchYouTubeSong({
             name: url,
             limit: 1,
-            fast: false
+            fast: true
         })
-        const song = songData[0]
 
+        const song = songData[0] // searchYouTubeSong reutrn an array even if you specify for one song
+
+        // check if the song already exists
         if (isDownloaded(song.id) || await isInDatabase(song.id)) {
             res.json({ success: false, message: "This song is already downloaded" })
             return
@@ -190,7 +193,7 @@ app.post("/downloadsong", logRequest("/downloadsong"), checkAuthenticated, async
         try {
             await addSongToDatabase(song)
         } catch (error) {
-            await unlink(path.join(FOLDER, `${song.id}.mp3`))
+            await unlink(path.join(FOLDER, `${song.id}.mp3`)) // remove song file if there was an error adding songs info to the databse
             throw error
         }
 
@@ -221,7 +224,7 @@ function start() {
     // Optionally use onReady() to get a promise that resolves when store is ready.
     sessionStore.onReady().then(() => {
         // MySQL session store ready for use.
-        app.listen(PORT, () => console.log(`[SERVER] listening on port http://localhost:${PORT}`))
+        app.listen(PORT, "0.0.0.0",  () => console.log(`[SERVER] listening on port http://localhost:${PORT}`))
     }).catch(error => {
         console.error(error)
     })
