@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon backend/index.ts",
     "prisma-migrate-generate": "npx prisma migrate dev && npx prisma generate",
-    "gen-tailwind": "npx @tailwindcss/cli -i ./views/css/style.css -o ./views/css/output.css --watch"
+    "gen-tailwind": "npx @tailwindcss/cli -i ./frontend/css/style.css -o ./frontend/css/output.css --watch"
   },
   "keywords": [],
   "author": "",
