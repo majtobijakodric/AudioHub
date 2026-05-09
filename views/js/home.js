@@ -171,18 +171,65 @@ async function searchBarShow() {
     const MAX_TITLE_LENGTH = 50 // Maximum title length before truncation
 
     results.forEach((song) => {
+
       const songButton = document.createElement("button")
+      const songTitle = document.createElement("span")
+      const songLoading = document.createElement("img")
       songButton.type = "button"
-      songButton.classList.add("block", "w-full", "rounded-xl", "border-transparent", "px-4", "py-3", "text-left", "text-sm", "text-amber-50", "hover:bg-white/5", "cursor-pointer")
-      
+      songButton.classList.add("flex", "w-full", "items-center", "gap-3", "rounded-xl", "border-transparent", "px-4", "py-3", "text-left", "text-sm", "text-amber-50", "hover:bg-white/5", "cursor-pointer")
+      songTitle.classList.add("min-w-0", "flex-1", "truncate")
+
+      // gif that will show when the song is being downloaded
+      songLoading.src = loadingGif
+      songLoading.alt = "Loading"
+      songLoading.classList.add("hidden", "h-6", "w-6", "shrink-0", "object-contain")
+
       if (song.title.length > MAX_TITLE_LENGTH) {
-        songButton.textContent = `${song.title.substr(0, MAX_TITLE_LENGTH)}...`
+        songTitle.textContent = `${song.title.substr(0, MAX_TITLE_LENGTH)}...`
       } else {
-        songButton.textContent = song.title
+        songTitle.textContent = song.title
       }
 
-      searchBarPopup.appendChild(songButton)
+      songButton.appendChild(songTitle)
+      songButton.appendChild(songLoading)
 
+      // set up an event listener that is linked to the button
+      songButton.addEventListener("click", async () => {
+        if (songButton.disabled) {
+          return
+        }
+
+        songButton.disabled = true
+        songButton.classList.add("opacity-50", "cursor-not-allowed")
+        songLoading.classList.remove("hidden")
+
+        try {
+          const res = await fetch("/downloadsong", {
+            method: "POST",
+            body: JSON.stringify({
+              url: song.url
+            }),
+            headers: {
+              "Content-type": "application/json; charset=UTF-8"
+            }
+          })
+
+          if (res.ok) {
+            const data = await res.json() // parse the response
+            console.log(data)
+            hideSearchBar()
+            getAllSongs().then((songs) => putSongOnScrean(songs)) // refresh the songs on screan
+          } else {
+            console.log("Failed to download song")
+          }
+        } finally {
+          songButton.disabled = false
+          songButton.classList.remove("opacity-50", "cursor-not-allowed")
+          songLoading.classList.add("hidden")
+        }
+      })
+
+      searchBarPopup.appendChild(songButton) // show the actual element  
     })
   })
 
@@ -192,8 +239,6 @@ async function searchSongs(songName) {
   console.log("Started fetching ");
 
   try {
-    console.log("in try ");
-
     const res = await fetch("/ytsearch", {
       method: "POST",
       body: JSON.stringify({

@@ -47,11 +47,11 @@
             </div>
         </header>
 
-        <main class="flex">
-            <aside class="m-2 w-2xs  border-0 rounded-2xl bg-[#181818]"></aside>
-            <section class="m-2 ml-0 w-full border-0 rounded-2xl bg-[#181818]">
+        <main class="flex min-h-0">
+            <aside class="m-2 w-2xs min-h-0 max-h-[calc(100vh-11rem)] border-0 rounded-2xl bg-[#181818] overflow-y-auto scrollbar scrollbar-w-2 scrollbar-track-[#101010] scrollbar-thumb-amber-50/20 scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-hover:scrollbar-thumb-amber-50/50 scrollbar-active:scrollbar-thumb-amber-50/70"></aside>
+            <section class="m-2 ml-0 w-full min-h-0 max-h-[calc(100vh-11rem)] border-0 rounded-2xl bg-[#181818] overflow-y-auto scrollbar scrollbar-w-2 scrollbar-track-[#101010] scrollbar-thumb-amber-50/20 scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-hover:scrollbar-thumb-amber-50/50 scrollbar-active:scrollbar-thumb-amber-50/70">
                 <!-- here songs get shown with fetch /getallsongs api -->
-                <ul id="songsList" class="m-2">
+                <ul id="songsList" class="m-2 pr-2">
                     <!-- songs are added in js -->
                 </ul>
             </section>
