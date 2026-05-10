@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AudioHub - home</title>
     <link rel="stylesheet" href="/css/output.css" />
+    <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 </head>
 
@@ -60,7 +61,10 @@
             <div class="justify-self-end pr-2 z-110">
                 <!-- add user profile popup -->
                 <a onclick="toggleUserMenu()" class="cursor-pointer z-110">
-                    <img class="h-12 w-12 object-contain" src="assets/favicon.svg" alt="user" />
+                    <!-- user icon -->
+                    <div class="border-0 rounded-4xl bg-[#27B556] w-12 h-12 flex items-center justify-center">
+                        <img class="h-9 w-10 object-contain" src="assets/userIcon.png" alt="user" />
+                    </div>
                 </a>
             </div>
         </header>
@@ -79,10 +83,43 @@
             </section>
         </main>
 
-        <footer class="border-0 rounded-2xl m-2 bg-[#181818]"></footer>
+        <footer class="m-2 rounded-2xl border border-white/5 bg-black shadow-2xl shadow-black/40">
+            <div class="flex h-full w-full items-center gap-4 rounded-2xl px-4 py-3 bg-[#181818]">
+                <div
+                    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#28B556]/15 text-[#28B556]">
+                    <i class="fa-solid fa-music"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p id="playerTitle" class="truncate text-sm font-semibold text-amber-50">Choose a song</p>
+                    <p id="playerChannel" class="truncate text-xs text-gray-400">Nothing playing</p>
+                    <audio id="audioPlayer" class="hidden" preload="metadata" src=""></audio>
+                </div>
+                <div class="flex min-w-0 flex-[2] items-center gap-3">
+                    <button id="playPauseButton" type="button"
+                        class="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#28B556] text-black transition hover:bg-[#31d267]"
+                        aria-label="Play">
+                        <i id="playPauseIcon" class="fa-solid fa-play text-sm"></i>
+                    </button>
+                    <span id="currentTime" class="w-10 shrink-0 text-right text-xs text-gray-300">0:00</span>
+                    <input id="progressBar" class="h-1 w-full cursor-pointer accent-[#28B556]" type="range" min="0"
+                        max="100" value="0" step="0.1" aria-label="Song progress" />
+                    <span id="durationTime" class="w-10 shrink-0 text-xs text-gray-300">0:00</span>
+                </div>
+                <div class="hidden items-center gap-3 md:flex">
+                    <button id="muteButton" type="button"
+                        class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-gray-300 transition hover:bg-white/10 hover:text-amber-50"
+                        aria-label="Mute">
+                        <i id="volumeIcon" class="fa-solid fa-volume-high text-sm"></i>
+                    </button>
+                    <input id="volumeBar" class="h-1 w-24 cursor-pointer accent-[#28B556]" type="range" min="0" max="1"
+                        value="1" step="0.01" aria-label="Volume" />
+                </div>
+            </div>
+        </footer>
     </div>
 </body>
 
+<script defer src="js/player.js"></script>
 <script defer src="js/home.js"></script>
 <script defer src="js/userMenu.js"></script>
 

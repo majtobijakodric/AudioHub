@@ -223,7 +223,7 @@ app.post("/play", logRequest("/play"), checkAuthenticated, async (req: Request, 
 
     // return a song file based on song id parameter
     try {
-        const songId = req.query.id
+        const songId = req.body.id
         logWithTime(`[PLAY] play api called for song id: ${songId}`)
 
         if (!isString(songId) || isEmptyString(songId)) {
@@ -237,8 +237,8 @@ app.post("/play", logRequest("/play"), checkAuthenticated, async (req: Request, 
             return
         }
 
-        const songPath = path.join(FOLDER, `${songId}.mp3`)
-
+        const SONGS_FOLDER = path.join(__dirname, "../data/songs")
+        const songPath = path.join(SONGS_FOLDER, `${songId}.mp3`)
         res.sendFile(songPath)
     } catch (error) {
         logWithTime(`[PLAY] failed to send a song: ${error}`)

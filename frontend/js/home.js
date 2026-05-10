@@ -87,6 +87,7 @@ async function putSongOnScrean(songs) {
     const li = document.createElement("li")
 
     const songButton = document.createElement("button") // clickable button containing all song content
+    const songImgFrame = document.createElement("div")
     const songInfo = document.createElement("div")
     const songName = document.createElement("p")
     const songImg = document.createElement("img")
@@ -96,7 +97,8 @@ async function putSongOnScrean(songs) {
     // add classes to the elements
     li.classList.add("w-full", "relative")
     songButton.classList.add("flex", "items-center", "gap-4", "w-full", "rounded-lg", "px-3", "py-2", "text-left", "hover:bg-white/10", "cursor-pointer")
-    songImg.classList.add("h-16", "w-16", "shrink-0", "rounded-lg", "object-cover")
+    songImgFrame.classList.add("h-16", "w-16", "shrink-0", "overflow-hidden", "rounded-full")
+    songImg.classList.add("h-full", "w-full", "scale-135", "object-cover")
     songInfo.classList.add("min-w-0", "flex-1", "flex", "flex-col", "items-start", "justify-start", "text-left")
     songName.classList.add("truncate", "font-medium", "text-left", "text-amber-50")
     chanelName.classList.add("truncate", "text-left", "text-sm", "text-gray-400")
@@ -111,10 +113,15 @@ async function putSongOnScrean(songs) {
 
     // download the song when the button is clicked
     songButton.addEventListener("click", async () => {
-      // add logic here to /play song
+      try {
+        await playSong(song)
+      } catch (error) {
+        console.log("internal error", error)
+      }
     })
 
-    songButton.appendChild(songImg)
+    songImgFrame.appendChild(songImg)
+    songButton.appendChild(songImgFrame)
     songInfo.appendChild(songName)
     songInfo.appendChild(chanelName)
     songButton.appendChild(songInfo)
@@ -269,8 +276,4 @@ async function searchSongs(songName) {
     console.log(`Error while searching ${error}`);
     return []
   }
-}
-
-async function downloadSong(songId) {
-
 }
