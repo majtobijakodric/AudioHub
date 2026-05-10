@@ -219,7 +219,7 @@ app.get("/getallsongs", logRequest("/getallsongs"), checkAuthenticated, async (r
     }
 })
 
-app.get("/play", logRequest("/play"), checkAuthenticated, async (req: Request, res: Response) => {
+app.post("/play", logRequest("/play"), checkAuthenticated, async (req: Request, res: Response) => {
 
     // return a song file based on song id parameter
     try {
