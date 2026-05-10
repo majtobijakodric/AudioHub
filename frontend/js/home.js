@@ -85,19 +85,21 @@ async function putSongOnScrean(songs) {
   // makes a div inside <li> to show song contetnt
   songs.forEach(song => {
     const li = document.createElement("li")
-    const songDiv = document.createElement("div")
+
+    const songButton = document.createElement("button") // clickable button containing all song content
     const songInfo = document.createElement("div")
     const songName = document.createElement("p")
     const songImg = document.createElement("img")
     const songDuration = document.createElement("p")
     const chanelName = document.createElement("p")
 
-    li.classList.add("w-full")
-    songDiv.classList.add("flex", "items-center", "gap-4", "w-full", "rounded-lg", "px-3", "py-2", "hover:bg-white/10", "cursor-pointer")
+    // add classes to the elements
+    li.classList.add("w-full", "relative")
+    songButton.classList.add("flex", "items-center", "gap-4", "w-full", "rounded-lg", "px-3", "py-2", "text-left", "hover:bg-white/10", "cursor-pointer")
     songImg.classList.add("h-16", "w-16", "shrink-0", "rounded-lg", "object-cover")
-    songInfo.classList.add("min-w-0", "flex-1")
-    songName.classList.add("truncate", "font-medium", "text-amber-50")
-    chanelName.classList.add("truncate", "text-sm", "text-gray-400")
+    songInfo.classList.add("min-w-0", "flex-1", "flex", "flex-col", "items-start", "justify-start", "text-left")
+    songName.classList.add("truncate", "font-medium", "text-left", "text-amber-50")
+    chanelName.classList.add("truncate", "text-left", "text-sm", "text-gray-400")
     songDuration.classList.add("ml-auto", "shrink-0", "text-sm", "text-gray-300")
 
     songImg.src = song.thumbnailURL || defaultThumbnail // Fallback image if thumbnailURL is not available
@@ -107,12 +109,19 @@ async function putSongOnScrean(songs) {
     songName.textContent = song.title
     songDuration.textContent = formatDuration(song.duration)
 
-    songDiv.appendChild(songImg)
+    // download the song when the button is clicked
+    songButton.addEventListener("click", async () => {
+      // add logic here to /play song
+    })
+
+    songButton.appendChild(songImg)
     songInfo.appendChild(songName)
     songInfo.appendChild(chanelName)
-    songDiv.appendChild(songInfo)
-    songDiv.appendChild(songDuration)
-    li.appendChild(songDiv)
+    songButton.appendChild(songInfo)
+    songButton.appendChild(songDuration)
+    li.appendChild(songButton)
+
+
     songsList.appendChild(li)
   })
 }
@@ -260,4 +269,8 @@ async function searchSongs(songName) {
     console.log(`Error while searching ${error}`);
     return []
   }
+}
+
+async function downloadSong(songId) {
+
 }
