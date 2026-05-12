@@ -31,7 +31,8 @@ type SearchSongParams = {
 // gets an js object and returns it's data sorted
 const toSongData = (item: any): YouTubeSongData => {
   const id = String(item.id ?? "");
-  const webpageUrl = item.webpage_url ?? `https://www.youtube.com/watch?v=${id}`;
+  const webpageUrl =
+    item.webpage_url ?? `https://www.youtube.com/watch?v=${id}`;
 
   return {
     id,
@@ -53,8 +54,11 @@ const toSongData = (item: any): YouTubeSongData => {
   };
 };
 
-export async function searchYouTubeSong({ name, limit = 5, fast = false }: SearchSongParams): Promise<YouTubeSongData[]> {
-
+export async function searchYouTubeSong({
+  name,
+  limit = 5,
+  fast = false,
+}: SearchSongParams): Promise<YouTubeSongData[]> {
   // return if name missing
   if (!name?.trim()) {
     throw new Error("Song name is required.");
@@ -62,8 +66,7 @@ export async function searchYouTubeSong({ name, limit = 5, fast = false }: Searc
 
   const searchLimit = Math.max(1, Math.floor(limit));
   const { stdout } = await ytdlpExec(`ytsearch${searchLimit}:${name.trim()}`, {
-
-    // returns only json data 
+    // returns only json data
     dumpJson: true,
     skipDownload: true,
     noWarnings: true,
@@ -82,17 +85,22 @@ export async function searchYouTubeSong({ name, limit = 5, fast = false }: Searc
     .map((line: string) => toSongData(JSON.parse(line))); // JSON.parse makes an js object from json and then toSongData makes add the type to it
 }
 
-export async function downloadYouTubeSong(url: string, folder: string, songid: string, progressBar = false) {
+export async function downloadYouTubeSong(
+  url: string,
+  folder: string,
+  songid: string,
+  progressBar = false,
+) {
   if (!url?.trim()) {
     throw new Error("Song URL is required.");
   }
 
   if (!folder?.trim()) {
-    throw new Error("Song folder is required!")
+    throw new Error("Song folder is required!");
   }
 
   // create the folder songs if it doesnt exist
-  // recursive: true => if the folder already exists doesn't crash 
+  // recursive: true => if the folder already exists doesn't crash
   await mkdir(folder, { recursive: true });
 
   const audioFormat = "mp3";

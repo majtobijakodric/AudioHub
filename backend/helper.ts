@@ -2,18 +2,22 @@ import { Request, Response, NextFunction } from "express";
 
 // x is string means that f this function returns true, TypeScript can treat x as a string afterward.
 export function isString(x: unknown): x is string {
-    return typeof x === "string";
+  return typeof x === "string";
 }
 
 export function isEmptyString(x: string): boolean {
-    return x.length === 0;
+  return x.length === 0;
 }
 
 export function logWithTime(message: string): void {
-    console.log(`${new Date().toLocaleTimeString('en-GB')} ${message}`)
+  console.log(`${new Date().toLocaleTimeString("en-GB")} ${message}`);
 }
 
-export const logRequest = async (req: Request, res: Response, next: NextFunction) => {
-    logWithTime(`[${req.path}] from: ${req.ip}`)
-    next();
+export const logRequest = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  logWithTime(`[${req.path}] from: ${req.ip}`);
+  next();
 };

@@ -19,7 +19,8 @@
             </div>
 
             <% if (errors && errors.length> 0) { %>
-                <div class="mb-5 rounded-md border border-red-600 bg-red-600/10 px-4 py-3 text-sm font-medium text-red-200">
+                <div
+                    class="mb-5 rounded-md border border-red-600 bg-red-600/10 px-4 py-3 text-sm font-medium text-red-200">
                     <i class="fa-solid fa-circle-exclamation mr-2" aria-hidden="true"></i>
                     <%= errors[0] %>
                 </div>
@@ -28,16 +29,18 @@
                     <form class="grid gap-5" action="/register" method="POST">
                         <div class="grid gap-2">
                             <label class="text-sm font-bold" for="username">Username</label>
-                            <div class="flex items-center gap-3 rounded-md border border-[#727272] bg-[#121212] px-3 transition focus-within:border-white">
+                            <div
+                                class="flex items-center gap-3 rounded-md border border-[#727272] bg-[#121212] px-3 transition focus-within:border-white">
                                 <i class="fa-solid fa-user text-[#b3b3b3]" aria-hidden="true"></i>
-                                <input class="min-h-12 w-full text-white outline-none placeholder:text-[#727272]" type="text"
-                                    id="username" name="username" placeholder="Username" required>
+                                <input class="min-h-12 w-full text-white outline-none placeholder:text-[#727272]"
+                                    type="text" id="username" name="username" placeholder="Username" required>
                             </div>
                         </div>
 
                         <div class="grid gap-2">
                             <label class="text-sm font-bold" for="password">Password</label>
-                            <div class="flex items-center gap-3 rounded-md border border-[#727272] bg-[#121212] px-3 transition focus-within:border-white">
+                            <div
+                                class="flex items-center gap-3 rounded-md border border-[#727272] bg-[#121212] px-3 transition focus-within:border-white">
                                 <i class="fa-solid fa-lock text-[#b3b3b3]" aria-hidden="true"></i>
                                 <input class="min-h-12 w-full text-white outline-none placeholder:text-[#727272]"
                                     type="password" id="password" name="password" placeholder="Password" required>
