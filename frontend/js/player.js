@@ -9,6 +9,7 @@ const playerChannel = document.getElementById("playerChannel");
 const muteButton = document.getElementById("muteButton");
 const volumeIcon = document.getElementById("volumeIcon");
 const volumeBar = document.getElementById("volumeBar");
+const songThumbnail = document.getElementById("songThumbnail");
 
 let currentObjectUrl;
 
@@ -67,6 +68,7 @@ function formatPlayerDuration(durationInSeconds) {
 
 function updatePlayButton() {
   playPauseIcon.classList.toggle("fa-play", audioPlayer.paused);
+  songThumbnail.classList.toggle("animate-[spin_8s_linear_infinite]", !audioPlayer.paused); // resets the icon songThumbnail animation when paused
   playPauseIcon.classList.toggle("fa-pause", !audioPlayer.paused);
   playPauseButton.setAttribute(
     "aria-label",
@@ -124,9 +126,15 @@ async function playSong(song) {
     URL.revokeObjectURL(currentObjectUrl);
   }
 
+  console.log(song.thumbnail);
+
   currentObjectUrl = objectUrl;
   playerTitle.textContent = song.title;
   playerChannel.textContent = song.channelName || "Unknown channel";
+  songThumbnail.src =
+    `https://i.ytimg.com/vi/${song.id}/hqdefault.jpg` ||
+    "/default-thumbnail.png";
+  songThumbnail.classList.add("scale-150", "animate-[spin_8s_linear_infinite]");
   audioPlayer.src = objectUrl;
   audioPlayer.play().catch((err) => console.error("Audio play failed:", err));
 }

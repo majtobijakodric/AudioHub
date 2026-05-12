@@ -424,8 +424,26 @@
     --tw-scale-z: 135%;
     scale: var(--tw-scale-x) var(--tw-scale-y);
   }
+  .scale-150 {
+    --tw-scale-x: 150%;
+    --tw-scale-y: 150%;
+    --tw-scale-z: 150%;
+    scale: var(--tw-scale-x) var(--tw-scale-y);
+  }
+  .rotate-\[10rad\] {
+    rotate: 10rad;
+  }
+  .rotate-\[1000\] {
+    rotate: 1000;
+  }
+  .rotate-\[1000rad\] {
+    rotate: 1000rad;
+  }
   .transform {
     transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
+  }
+  .animate-\[spin_8s_linear_infinite\] {
+    animation: spin 8s linear infinite;
   }
   .cursor-not-allowed {
     cursor: not-allowed;
@@ -1039,6 +1057,11 @@
   syntax: "*";
   inherits: false;
   initial-value: solid;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {

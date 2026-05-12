@@ -96,53 +96,13 @@ async function putSongOnScrean(songs) {
 
     // add classes to the elements
     li.classList.add("w-full", "relative");
-    songButton.classList.add(
-      "flex",
-      "items-center",
-      "gap-4",
-      "w-full",
-      "rounded-lg",
-      "px-3",
-      "py-2",
-      "text-left",
-      "hover:bg-white/10",
-      "cursor-pointer",
-    );
-    songImgFrame.classList.add(
-      "h-16",
-      "w-16",
-      "shrink-0",
-      "overflow-hidden",
-      "rounded-full",
-    );
+    songButton.classList.add("flex", "items-center", "gap-4", "w-full", "rounded-lg", "px-3", "py-2", "text-left", "hover:bg-white/10", "cursor-pointer");
+    songImgFrame.classList.add("h-16", "w-16", "shrink-0", "overflow-hidden", "rounded-full");
     songImg.classList.add("h-full", "w-full", "scale-135", "object-cover");
-    songInfo.classList.add(
-      "min-w-0",
-      "flex-1",
-      "flex",
-      "flex-col",
-      "items-start",
-      "justify-start",
-      "text-left",
-    );
-    songName.classList.add(
-      "truncate",
-      "font-medium",
-      "text-left",
-      "text-amber-50",
-    );
-    chanelName.classList.add(
-      "truncate",
-      "text-left",
-      "text-sm",
-      "text-gray-400",
-    );
-    songDuration.classList.add(
-      "ml-auto",
-      "shrink-0",
-      "text-sm",
-      "text-gray-300",
-    );
+    songInfo.classList.add("min-w-0", "flex-1", "flex", "flex-col", "items-start", "justify-start", "text-left");
+    songName.classList.add("truncate", "font-medium", "text-left", "text-amber-50");
+    chanelName.classList.add("truncate", "text-left", "text-sm", "text-gray-400");
+    songDuration.classList.add("ml-auto", "shrink-0", "text-sm", "text-gray-300");
 
     songImg.src = song.thumbnailURL || defaultThumbnail; // Fallback image if thumbnailURL is not available
     songImg.alt = "song cover";
