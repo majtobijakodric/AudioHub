@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from "express";
 
 // x is string means that f this function returns true, TypeScript can treat x as a string afterward.
 export function isString(x: unknown): x is string {
@@ -12,3 +13,7 @@ export function logWithTime(message: string): void {
     console.log(`${new Date().toLocaleTimeString('en-GB')} ${message}`)
 }
 
+export const logRequest = async (req: Request, res: Response, next: NextFunction) => {
+    logWithTime(`[${req.path}] from: ${req.ip}`)
+    next();
+};

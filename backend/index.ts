@@ -1,17 +1,16 @@
 import { createUser, initializePassport, checkAuthenticated, checkNotAuthenticated } from "./auth"
 import { isString, isEmptyString } from "./helper"
 import { searchYouTubeSong, downloadYouTubeSong, YouTubeSongData } from "./youtube"
-import express, { NextFunction, Request, Response } from 'express'
+import express, { NextFunction, request, Request, Response } from 'express'
 import { addSongToDatabase, isDownloaded, isInDatabase } from "./songFunctions"
-
-import flash from "express-flash"
+import flash from "express-flash" // used 2x for sending login and registration erros
 import session from "express-session"
-import MySQLStore from "express-mysql-session"
-import { unlink } from "node:fs/promises"
-import path from "node:path"
-import passport from "passport"
+import MySQLStore from "express-mysql-session" // for storing sessions in the db
+import { unlink } from "node:fs/promises" // for removing files 
+import path from "node:path" // to get the path functions
+import passport from "passport" // auth
 import { prisma } from "../lib/prisma" // prisma adapter so you can talk to the db
-import { logWithTime } from "./helper"
+import { logRequest, logWithTime } from "./helper" // request loggin midleware
 
 const app = express()
 const PORT = Number(process.env.PORT) || 8080 // set the port in .env
@@ -60,14 +59,12 @@ app.use(express.static(path.join(__dirname, "../frontend")))
 // so you can see icons in html
 app.use("/fontawesome", express.static(path.join(__dirname, "../node_modules/@fortawesome/fontawesome-free")))
 
-function logRequest(route: string) {
-    return (req: Request, res: Response, next: NextFunction) => {
-        logWithTime(`[${route}] from: ${req.ip}`)
-        next()
-    }
-}
 
-app.get('/', logRequest("/"), (req, res) => {
+
+// midleware used for logging all request with path and ip
+app.use(logRequest);
+
+app.get('/', logRequest, (req, res) => {
     if (req.isAuthenticated()) {
         return res.redirect("/home")
     }
@@ -75,23 +72,23 @@ app.get('/', logRequest("/"), (req, res) => {
     res.redirect("/login")
 })
 
-app.get('/login', logRequest("/login"), checkNotAuthenticated, (req, res) => {
+app.get('/login', logRequest, checkNotAuthenticated, (req, res) => {
     res.render("login")
 })
 
-app.post('/login', logRequest("/login"), checkNotAuthenticated, passport.authenticate("local", {
+app.post('/login', logRequest, checkNotAuthenticated, passport.authenticate("local", {
     successRedirect: "/home",
     failureRedirect: "/login",
     failureFlash: true
 }))
 
-app.get("/home", logRequest("/home"), checkAuthenticated, (req: Request, res: Response) => {
+app.get("/home", logRequest, checkAuthenticated, (req: Request, res: Response) => {
     res.render("home", {
         name: (req.user as { username: string }).username
     })
 })
 
-app.post("/logout", logRequest("/logout"), (req: Request, res: Response, next: NextFunction) => {
+app.post("/logout", logRequest, (req: Request, res: Response, next: NextFunction) => {
     req.logOut((error) => {
         if (error) return next(error)
 
@@ -99,13 +96,13 @@ app.post("/logout", logRequest("/logout"), (req: Request, res: Response, next: N
     })
 })
 
-app.get("/register", logRequest("/register"), checkNotAuthenticated, (req: Request, res: Response) => {
+app.get("/register", checkNotAuthenticated, (req: Request, res: Response) => {
     res.render("register", {
         errors: req.flash("error")
     })
 })
 
-app.post('/register', logRequest("/register"), checkNotAuthenticated, async (req: Request, res: Response) => {
+app.post('/register', checkNotAuthenticated, async (req: Request, res: Response) => {
     logWithTime(`[REGISTER] register api called`)
 
     const { username, password } = req.body
@@ -133,7 +130,7 @@ app.post('/register', logRequest("/register"), checkNotAuthenticated, async (req
     }
 })
 
-app.post("/ytsearch", logRequest("/ytsearch"), checkAuthenticated, async (req: Request, res: Response) => {
+app.post("/ytsearch", checkAuthenticated, async (req: Request, res: Response) => {
 
     try {
         const songname = req.body.songname
@@ -160,7 +157,7 @@ app.post("/ytsearch", logRequest("/ytsearch"), checkAuthenticated, async (req: R
     }
 })
 
-app.post("/downloadsong", logRequest("/downloadsong"), checkAuthenticated, async (req: Request, res: Response) => {
+app.post("/downloadsong", checkAuthenticated, async (req: Request, res: Response) => {
     try {
         const url = req.body.url
         logWithTime(`[YTDOWNLOAD] starting downloading song: ${url}`)
@@ -206,7 +203,7 @@ app.post("/downloadsong", logRequest("/downloadsong"), checkAuthenticated, async
 
 })
 
-app.get("/getallsongs", logRequest("/getallsongs"), checkAuthenticated, async (req: Request, res: Response) => {
+app.get("/getallsongs", checkAuthenticated, async (req: Request, res: Response) => {
     // this is used at start to fetch all songs 
     try {
         logWithTime("[ALLSONGS] getallsongs api called")
@@ -219,7 +216,7 @@ app.get("/getallsongs", logRequest("/getallsongs"), checkAuthenticated, async (r
     }
 })
 
-app.post("/play", logRequest("/play"), checkAuthenticated, async (req: Request, res: Response) => {
+app.post("/play", checkAuthenticated, async (req: Request, res: Response) => {
 
     // return a song file based on song id parameter
     try {
@@ -250,6 +247,7 @@ function start() {
     // Optionally use onReady() to get a promise that resolves when store is ready.
     sessionStore.onReady().then(() => {
         // MySQL session store ready for use.
+        // 0.0.0.0 for listening on all IPv4
         app.listen(PORT, "0.0.0.0", () => logWithTime(`[SERVER] listening on port http://localhost:${PORT}`))
     }).catch(error => {
         logWithTime(`${error}`)
