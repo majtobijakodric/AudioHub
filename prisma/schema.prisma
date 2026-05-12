@@ -12,6 +12,7 @@ model User {
   id             String @id @default(uuid())
   username       String @unique
   hashedPassword String
+  playlists      Playlist[] // one user can have many playlists
 }
 
 model Song {
@@ -23,4 +24,13 @@ model Song {
   diskPath     String
   url          String
   uploadDate   DateTime @default(now())
+  playlists    Playlist[] @relation("PlaylistSongs")
+}
+
+model Playlist {
+  id     String @id @default(uuid())
+  name   String
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  songs  Song[] @relation("PlaylistSongs") 
 }
