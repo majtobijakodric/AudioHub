@@ -83,13 +83,15 @@
             </section>
         </main>
 
+        <!-- audio player -->
         <footer class="m-2 rounded-2xl border border-white/5 bg-black shadow-2xl shadow-black/40">
             <div class="flex h-full w-full items-center gap-4 rounded-2xl px-4 py-3 bg-[#181818]">
                 <div
-                    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#28B556]/15 text-[#28B556]">
-                    <i class="fa-solid fa-music"></i>
+                    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl  text-[#28B556]">
+                <img id="songThumbnail" src="assets/noSongThumbnail.png" alt="Song thumbnail" class="object-cover rounded-4xl">
                 </div>
-                <div class="min-w-0 flex-1">
+                <!-- song info -->
+                <div class="min-w-0 shrink-0 w-32 md:w-3 lg:w-46">
                     <p id="playerTitle" class="truncate text-sm font-semibold text-amber-50">Choose a song</p>
                     <p id="playerChannel" class="truncate text-xs text-gray-400">Nothing playing</p>
                     <audio id="audioPlayer" class="hidden" preload="metadata" src=""></audio>
