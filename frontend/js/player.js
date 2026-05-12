@@ -54,6 +54,7 @@ audioPlayer.addEventListener("volumechange", updateVolumeIcon);
 function formatPlayerDuration(durationInSeconds) {
   const totalSeconds = Number(durationInSeconds);
 
+  // isFinite checks if the number is not Infinite, undefined, ...
   if (!Number.isFinite(totalSeconds) || totalSeconds < 0) {
     return "0:00";
   }
