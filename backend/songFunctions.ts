@@ -38,3 +38,48 @@ export async function addSongToDatabase(songData: YouTubeSongData) {
 
   return song;
 }
+
+export async function createPlaylist(name: string, userId: string) {
+  return await prisma.playlist.create({
+    data: {
+      name: name,
+      userId: userId,
+    },
+  });
+}
+
+export async function addSongToPlaylist(songId: string, playlistId: string) {
+  if (!isInDatabase(songId) || !isDownloaded(songId)) return false;
+
+  return await prisma.playlist.update({
+    where: {
+      id: playlistId,
+    },
+    data: {
+      songs: {
+        connect: {
+          id: songId,
+        },
+      },
+    },
+  });
+}
+
+export async function getPlayListsSongs(playlistId: string) {
+  return await prisma.playlist.findUnique({
+    where: {
+      id: playlistId,
+    },
+  });
+}
+
+export async function getUsersPlaylist(userId: string) {
+  return await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    include: {
+      playlists: true,
+    },
+  });
+}

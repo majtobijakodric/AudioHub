@@ -11,7 +11,15 @@ import {
   YouTubeSongData,
 } from "./youtube";
 import express, { NextFunction, request, Request, Response } from "express";
-import { addSongToDatabase, isDownloaded, isInDatabase } from "./songFunctions";
+import {
+  addSongToDatabase,
+  isDownloaded,
+  isInDatabase,
+  addSongToPlaylist,
+  getPlayListsSongs,
+  getUsersPlaylist,
+  createPlaylist,
+} from "./songFunctions";
 import flash from "express-flash"; // used 2x for sending login and registration erros
 import session from "express-session";
 import MySQLStore from "express-mysql-session"; // for storing sessions in the db
@@ -296,6 +304,26 @@ app.post("/play", checkAuthenticated, async (req: Request, res: Response) => {
     res.status(500).send({ success: false, message: "Failed to play song" });
   }
 });
+
+app.post("/createplaylist", checkAuthenticated, async (req: Request, res: Response) => {
+  const { name } = req.body;
+
+  if (!isString(name) || isEmptyString(name.trim())) {
+    res.status(400).json({ success: false, message: "Missing playlist name" });
+    return;
+  }
+
+  const userId = (req.user as { id: string }).id;
+
+  try {
+    const result = await createPlaylist(name.trim(), userId);
+    res.json({ success: true, result });
+  } catch (error) {
+    logWithTime(`[CREATEPLAYLIST] failed: ${error}`);
+    res.status(500).json({ success: false, message: "Failed to create playlist" });
+  }
+});
+
 
 function start() {
   // Optionally use onReady() to get a promise that resolves when store is ready.
