@@ -24,6 +24,7 @@ model Song {
   diskPath     String
   url          String
   uploadDate   DateTime @default(now())
+  createdAt    DateTime @default(now()) // for sorting songs by upload date
   playlists    Playlist[] @relation("PlaylistSongs")
 }
 
@@ -31,6 +32,7 @@ model Playlist {
   id     String @id @default(uuid())
   name   String
   userId String
+  createdAt DateTime @default(now()) // for sorting playlists by creation date
   user   User   @relation(fields: [userId], references: [id])
   songs  Song[] @relation("PlaylistSongs") 
 }

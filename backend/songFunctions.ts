@@ -72,7 +72,11 @@ export async function getPlayListsSongs(playlistId: string) {
     },
     select: {
       id: true,
-      songs: true,
+      songs: {
+        orderBy: {
+          createdAt: 'desc',
+        },
+      },
     },
   });
 }
@@ -85,6 +89,9 @@ export async function getUsersPlaylist(userId: string) {
     select: {
       id: true,
       name: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
     },
   });
 }
