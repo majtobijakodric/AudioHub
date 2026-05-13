@@ -70,6 +70,10 @@ export async function getPlayListsSongs(playlistId: string) {
     where: {
       id: playlistId,
     },
+    select: {
+      id: true,
+      songs: true,
+    },
   });
 }
 

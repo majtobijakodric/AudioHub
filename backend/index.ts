@@ -138,145 +138,134 @@ app.get("/register", checkNotAuthenticated, (req: Request, res: Response) => {
   });
 });
 
-app.post(
-  "/register",
-  checkNotAuthenticated,
-  async (req: Request, res: Response) => {
-    logWithTime(`[REGISTER] register api called`);
+app.post("/register", checkNotAuthenticated, async (req: Request, res: Response) => {
+  logWithTime(`[REGISTER] register api called`);
 
-    const { username, password } = req.body;
+  const { username, password } = req.body;
 
-    // check for valid username and password
-    // doesnt check for a strong password
-    const hasValidCredentialFormat =
-      isString(username) &&
-      isString(password) &&
-      !isEmptyString(username) &&
-      !isEmptyString(password);
+  // check for valid username and password
+  // doesnt check for a strong password
+  const hasValidCredentialFormat =
+    isString(username) &&
+    isString(password) &&
+    !isEmptyString(username) &&
+    !isEmptyString(password);
 
-    if (!hasValidCredentialFormat) {
-      logWithTime(`[REGISTER] Invalid data:`);
-      res.status(400).send({ succes: false, message: "Missing information" });
+  if (!hasValidCredentialFormat) {
+    logWithTime(`[REGISTER] Invalid data:`);
+    res.status(400).send({ succes: false, message: "Missing information" });
+    return;
+  }
+
+  if (await createUser(username, password)) {
+    logWithTime(`[REGISTER] added users ${username} to the database`);
+    res.redirect("login");
+  } else {
+    logWithTime(`[REGISTER] failed to add user ${username} to the database`);
+    req.flash("error", "This users already exists");
+    res.redirect("/register");
+  }
+},
+);
+
+app.post("/ytsearch", checkAuthenticated, async (req: Request, res: Response) => {
+  try {
+    const songname = req.body.songname;
+    const limit = Number(req.body.count) || 3;
+    const fast = req.body.fast;
+
+    logWithTime(
+      `[YTSEARCH] songname: ${songname}, limit: ${limit}, fast: ${fast}`,
+    );
+
+    if (!isString(songname) || isEmptyString(songname)) {
+      res.status(400).json({ success: false, error: "Missing songname" });
       return;
     }
-    if (await createUser(username, password)) {
-      logWithTime(`[REGISTER] added users ${username} to the database`);
-      res.redirect("login");
-    } else {
-      logWithTime(`[REGISTER] failed to add user ${username} to the database`);
-      req.flash("error", "This users already exists");
-      res.redirect("/register");
-    }
-  },
+
+    const songs = await searchYouTubeSong({
+      name: songname,
+      limit,
+      fast,
+    });
+
+    res.json(songs);
+  } catch (error) {
+    logWithTime(`[YTSEARCH] failed: ${error}`);
+    res
+      .status(500)
+      .json({ success: false, error: "Failed to search YouTube" });
+  }
+},
 );
 
-app.post(
-  "/ytsearch",
-  checkAuthenticated,
-  async (req: Request, res: Response) => {
-    try {
-      const songname = req.body.songname;
-      const limit = Number(req.body.count) || 3;
-      const fast = req.body.fast;
+app.post("/downloadsong", checkAuthenticated, async (req: Request, res: Response) => {
+  try {
+    const url = req.body.url;
+    logWithTime(`[YTDOWNLOAD] starting downloading song: ${url}`);
 
-      logWithTime(
-        `[YTSEARCH] songname: ${songname}, limit: ${limit}, fast: ${fast}`,
-      );
-
-      if (!isString(songname) || isEmptyString(songname)) {
-        res.status(400).json({ success: false, error: "Missing songname" });
-        return;
-      }
-
-      const songs = await searchYouTubeSong({
-        name: songname,
-        limit,
-        fast,
-      });
-
-      res.json(songs);
-    } catch (error) {
-      logWithTime(`[YTSEARCH] failed: ${error}`);
-      res
-        .status(500)
-        .json({ success: false, error: "Failed to search YouTube" });
-    }
-  },
-);
-
-app.post(
-  "/downloadsong",
-  checkAuthenticated,
-  async (req: Request, res: Response) => {
-    try {
-      const url = req.body.url;
-      logWithTime(`[YTDOWNLOAD] starting downloading song: ${url}`);
-
-      if (!isString(url) || isEmptyString(url)) {
-        res.status(400).json({ success: false, error: "Missing url" });
-        return;
-      }
-
-      // getting song info again, to put in in the db
-      // this does add time but it is here to verify if the song info is valid so the user doest mess with data that is going to the db
-
-      const songData: YouTubeSongData[] = await searchYouTubeSong({
-        name: url,
-        limit: 1,
-        fast: true,
-      });
-
-      const song = songData[0]; // searchYouTubeSong reutrn an array even if you specify for one song
-
-      // check if the song already exists
-      if (isDownloaded(song.id) || (await isInDatabase(song.id))) {
-        res.json({
-          success: false,
-          message: "This song is already downloaded",
-        });
-        return;
-      }
-
-      await downloadYouTubeSong(url, FOLDER, song.id, true);
-
-      try {
-        await addSongToDatabase(song);
-      } catch (error) {
-        await unlink(path.join(FOLDER, `${song.id}.mp3`)); // remove song file if there was an error adding songs info to the databse
-        throw error;
-      }
-
-      res.json({ success: true, message: "Song downloaded" });
-    } catch (error) {
-      logWithTime(`[YTDOWNLOAD] failed: ${error}`);
-      res
-        .status(500)
-        .json({ success: false, error: "Failed to download song" });
+    if (!isString(url) || isEmptyString(url)) {
+      res.status(400).json({ success: false, error: "Missing url" });
+      return;
     }
 
-    logWithTime("[YTDOWNLOAD] song downloaded and in database");
-  },
-);
+    // getting song info again, to put in in the db
+    // this does add time but it is here to verify if the song info is valid so the user doest mess with data that is going to the db
 
-app.get(
-  "/getallsongs",
-  checkAuthenticated,
-  async (req: Request, res: Response) => {
-    // this is used at start to fetch all songs
-    try {
-      logWithTime("[ALLSONGS] getallsongs api called");
-      const songs = await prisma.song.findMany();
-      res.send({ success: true, songs });
-    } catch (error) {
-      logWithTime(
-        `[GETALLSONGS] internal error while gettins all songs ${error}`,
-      );
-      res.status(500).send({
+    const songData: YouTubeSongData[] = await searchYouTubeSong({
+      name: url,
+      limit: 1,
+      fast: true,
+    });
+
+    const song = songData[0]; // searchYouTubeSong reutrn an array even if you specify for one song
+
+    // check if the song already exists
+    if (isDownloaded(song.id) || (await isInDatabase(song.id))) {
+      res.json({
         success: false,
-        message: "Couldn get all songs, internal error",
+        message: "This song is already downloaded",
       });
+      return;
     }
-  },
+
+    await downloadYouTubeSong(url, FOLDER, song.id, true);
+
+    try {
+      await addSongToDatabase(song);
+    } catch (error) {
+      await unlink(path.join(FOLDER, `${song.id}.mp3`)); // remove song file if there was an error adding songs info to the databse
+      throw error;
+    }
+
+    res.json({ success: true, message: "Song downloaded" });
+  } catch (error) {
+    logWithTime(`[YTDOWNLOAD] failed: ${error}`);
+    res
+      .status(500)
+      .json({ success: false, error: "Failed to download song" });
+  }
+
+  logWithTime("[YTDOWNLOAD] song downloaded and in database");
+},
+);
+
+app.get("/getallsongs", checkAuthenticated, async (req: Request, res: Response) => {
+  // this is used at start to fetch all songs
+  try {
+    logWithTime("[ALLSONGS] getallsongs api called");
+    const songs = await prisma.song.findMany();
+    res.send({ success: true, songs });
+  } catch (error) {
+    logWithTime(
+      `[GETALLSONGS] internal error while gettins all songs ${error}`,
+    );
+    res.status(500).send({
+      success: false,
+      message: "Couldn get all songs, internal error",
+    });
+  }
+},
 );
 
 app.post("/play", checkAuthenticated, async (req: Request, res: Response) => {
@@ -324,18 +313,49 @@ app.post("/createplaylist", checkAuthenticated, async (req: Request, res: Respon
   }
 });
 
+app.get("/getplaylists", checkAuthenticated, async (req: Request, res: Response) => {
+  const userId = (req.user as { id: string }).id;
+
+  try {
+    const playlists = await getUsersPlaylist(userId);
+    res.json({ success: true, playlists });
+  } catch (error) {
+    logWithTime(`[GETPLAYLISTS] failed: ${error}`);
+    res.status(500).json({ success: false, message: "Failed to get playlists" });
+  }
+});
+
+app.post("/getplaylistsongs", checkAuthenticated, async (req: Request, res: Response) => {
+  const { playlistId } = req.body;
+
+  // check if playlistId is valid
+  if (!isString(playlistId) || isEmptyString(playlistId.trim())) {
+    res.status(400).json({ success: false, message: "Missing playlist id" });
+    return;
+  }
+
+  try {
+    const songs = await getPlayListsSongs(playlistId);
+
+    console.log(songs);
+    
+    res.json({ success: true, songs });
+  } catch (error) {
+    logWithTime(`[GETPLAYLISTSONGS] failed: ${error}`);
+    res.status(500).json({ success: false, message: "Failed to get playlist songs" });
+  }
+});
+
 
 function start() {
   // Optionally use onReady() to get a promise that resolves when store is ready.
-  sessionStore
-    .onReady()
-    .then(() => {
-      // MySQL session store ready for use.
-      // 0.0.0.0 for listening on all IPv4
-      app.listen(PORT, "0.0.0.0", () =>
-        logWithTime(`[SERVER] listening on port http://localhost:${PORT}`),
-      );
-    })
+  sessionStore.onReady().then(() => {
+    // MySQL session store ready for use.
+    // 0.0.0.0 for listening on all IPv4
+    app.listen(PORT, "0.0.0.0", () =>
+      logWithTime(`[SERVER] listening on port http://localhost:${PORT}`),
+    );
+  })
     .catch((error) => {
       logWithTime(`${error}`);
     });
