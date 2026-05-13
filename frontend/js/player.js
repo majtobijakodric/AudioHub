@@ -126,8 +126,6 @@ async function playSong(song) {
     URL.revokeObjectURL(currentObjectUrl);
   }
 
-  console.log(song.thumbnail);
-
   currentObjectUrl = objectUrl;
   playerTitle.textContent = song.title;
   playerChannel.textContent = song.channelName || "Unknown channel";
