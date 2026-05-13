@@ -96,18 +96,25 @@ function addPlaylistToUI(playlists) {
 
     // gets all playlists songs and adds them to the selection menu
     playlistButton.addEventListener("click", async () => {
+      // gets all songs
       const songs = await getPlaylistSongs(playlist.id);
+
+      // puts all songs on the menu
       putSongOnScrean(songs);
+
+      // shows which playlist is selected
       document.querySelectorAll(".playlist-select-button").forEach((button) => {
         button.classList.remove("bg-white/10");
       });
       playlistButton.classList.add("bg-white/10");
     });
 
+
     addSongButton.addEventListener("click", (event) => {
       // stops refreshing the playlist menu when clicking the add song button
       event.stopPropagation();
 
+      // shows the menu to add songs to the playlist
       if (songAddMenu.classList.contains("hidden")) {
         songAddMenu.classList.remove("hidden");
       } else {
