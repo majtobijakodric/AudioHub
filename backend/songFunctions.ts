@@ -74,12 +74,13 @@ export async function getPlayListsSongs(playlistId: string) {
 }
 
 export async function getUsersPlaylist(userId: string) {
-  return await prisma.user.findUnique({
+  return await prisma.playlist.findMany({
     where: {
-      id: userId,
+      userId: userId,
     },
-    include: {
-      playlists: true,
+    select: {
+      id: true,
+      name: true,
     },
   });
 }
