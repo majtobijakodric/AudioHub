@@ -70,6 +70,7 @@ function addPlaylistToUI(playlists) {
   playlists.forEach((playlist) => {
     const li = document.createElement("li");
 
+    const playlistRow = document.createElement("div");
     const playlistButton = document.createElement("button");
     const playlistImgFrame = document.createElement("div");
     const playlistImg = document.createElement("img");
@@ -79,8 +80,9 @@ function addPlaylistToUI(playlists) {
     const addSongIcon = document.createElement("i");
 
     li.classList.add("playlist-item", "w-full", "relative", "px-2", "pb-2");
+    playlistRow.classList.add("flex", "items-center", "gap-2", "w-full", "rounded-lg", "hover:bg-white/10");
     playlistButton.type = "button";
-    playlistButton.classList.add("playlist-select-button", "flex", "items-center", "gap-4", "w-full", "rounded-lg", "px-3", "py-2", "text-left", "hover:bg-white/10", "cursor-pointer");
+    playlistButton.classList.add("playlist-select-button", "flex", "items-center", "gap-4", "min-w-0", "flex-1", "rounded-lg", "px-3", "py-2", "text-left", "cursor-pointer");
     playlistImgFrame.classList.add("h-12", "w-12", "shrink-0", "overflow-hidden", "rounded-full");
     playlistImg.classList.add("h-full", "w-full", "object-cover");
     playlistInfo.classList.add("min-w-0", "flex-1", "flex", "flex-col", "items-start", "justify-start", "text-left");
@@ -133,8 +135,9 @@ function addPlaylistToUI(playlists) {
     playlistInfo.appendChild(playlistName);
     playlistButton.appendChild(playlistImgFrame);
     playlistButton.appendChild(playlistInfo);
-    playlistButton.appendChild(addSongButton);
-    li.appendChild(playlistButton);
+    playlistRow.appendChild(playlistButton);
+    playlistRow.appendChild(addSongButton);
+    li.appendChild(playlistRow);
     playListContainer.appendChild(li);
   });
 }
@@ -157,7 +160,7 @@ allSongsMenu.addEventListener("submit", async (event) => {
   }
 
   try {
-    const response = await fetch("/addtoplaylist", {
+    const response = await fetch("/addsongtoplaylist", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -170,12 +173,13 @@ allSongsMenu.addEventListener("submit", async (event) => {
 
     const result = await response.json();
 
-    if (!result.ok || result.success === false) {
+    if (!response.ok || result.success === false) {
       throw new Error(result.message || "Failed to add songs to playlist");
     }
 
     songAddMenu.classList.add("hidden");
     allSongsMenu.reset();
+    alertBox.textContent = "";
   } catch (error) {
     console.error("Error adding songs to playlist:", error);
     alertBox.textContent = "Failed to add songs to playlist.";

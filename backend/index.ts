@@ -335,17 +335,39 @@ app.post("/getplaylistsongs", checkAuthenticated, async (req: Request, res: Resp
   }
 
   try {
-    const songs = await getPlayListsSongs(playlistId);
+    const playlist = await getPlayListsSongs(playlistId);
 
-    console.log(songs);
-    
-    res.json({ success: true, songs });
+    res.json({ success: true, songs: playlist?.songs ?? [] });
   } catch (error) {
     logWithTime(`[GETPLAYLISTSONGS] failed: ${error}`);
     res.status(500).json({ success: false, message: "Failed to get playlist songs" });
   }
 });
 
+app.post("/addsongtoplaylist", checkAuthenticated, async (req: Request, res: Response) => {
+  const { songIds, playlistId } = req.body;
+
+  if (!Array.isArray(songIds) || songIds.some((id) => !isString(id) || isEmptyString(id))) {
+    res.status(400).json({ success: false, message: "Invalid song ids" });
+    return;
+  }
+
+  if (!isString(playlistId) || isEmptyString(playlistId.trim())) {
+    res.status(400).json({ success: false, message: "Invalid playlist id" });
+    return;
+  }
+
+  try {
+    for (const songId of songIds) {
+      await addSongToPlaylist(songId, playlistId);
+    }
+
+    res.json({ success: true, message: "Songs added to playlist" });
+  } catch (error) {
+    logWithTime(`[ADDSONGTOPLAYLIST] failed: ${error}`);
+    res.status(500).json({ success: false, message: "Failed to add songs to playlist" });
+  }
+});
 
 function start() {
   // Optionally use onReady() to get a promise that resolves when store is ready.

@@ -49,7 +49,7 @@ export async function createPlaylist(name: string, userId: string) {
 }
 
 export async function addSongToPlaylist(songId: string, playlistId: string) {
-  if (!isInDatabase(songId) || !isDownloaded(songId)) return false;
+  if (!(await isInDatabase(songId)) || !isDownloaded(songId)) return false;
 
   return await prisma.playlist.update({
     where: {
