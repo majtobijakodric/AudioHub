@@ -40,7 +40,8 @@
 
                     <div class="mt-auto flex w-full justify-center border-0">
                         <form action="">
-                            <input id="playlistName" type="text" placeholder="playlist name" class="w-full mb-5 bg-amber-50 text-black border-0 rounded-xl pt-1 pl-2 pb-1 pr-2">
+                            <input id="playlistName" type="text" placeholder="playlist name"
+                                class="w-full mb-5 bg-amber-50 text-black border-0 rounded-xl pt-1 pl-2 pb-1 pr-2">
                             <button id="createPlaylist"
                                 class="text-center w-full h-8 hover:bg-[#27B556] bg-[#27B556]/80 transition-colors delay-100 rounded-4xl text-[14px] font-bold"
                                 type="button">Create playlist</button>
@@ -49,6 +50,28 @@
                 </div>
             </div>
         </div>
+
+        <!-- add to song playlist menu -->
+        <div id="songAddMenu" class="fixed hidden w-screen h-screen z-1000">
+            <div class="flex items-center justify-center w-full h-full bg-black/60">
+                <div
+                    class="relative z-10 border-2 border-black rounded-lg p-6 bg-[#181818] flex flex-col gap-3 justify-start h-130 w-100 min-w-0">
+
+                    <p class="text-sm font-bold text-amber-50 mb-4">Chose a song to add to the playlist</p>
+
+                    <div class="flex min-h-0 flex-1 w-full max-w-full justify-center overflow-hidden border-0">
+                        <form action="" id="allSongsMenu" class="flex min-h-0 h-full w-full max-w-full flex-col">
+                            <div id="allSongsList" class="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-2 scrollbar scrollbar-w-2 scrollbar-track-[#101010] scrollbar-thumb-amber-50/20 scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-hover:scrollbar-thumb-amber-50/50 scrollbar-active:scrollbar-thumb-amber-50/70">
+                            </div>
+
+                            <!-- in js it will say with playlist to add to -->
+                            <button class="text-center w-full h-8 hover:bg-[#27B556] bg-[#27B556]/80 transition-colors delay-100 rounded-4xl text-[14px] font-bold mt-6" type="button">Add Songs to</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <header class="border-0 rounded-2xl m-2 grid grid-cols-3 items-center bg-[#181818]">
             <!-- left -->
