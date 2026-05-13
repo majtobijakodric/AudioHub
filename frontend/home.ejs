@@ -33,13 +33,18 @@
         </div>
 
         <!-- add to playList menu -->
-        <div id="playListMenu" class="fixed hidden z-100 w-screen h-screen">
+        <div id="playlistMenu" class="fixed hidden w-screen h-screen z-1000">
             <div class="flex items-center justify-center w-full h-full bg-black/60">
                 <div
-                    class="relative z-10 border-2 rounded-lg p-6 bg-[#181818] flex flex-col gap-1 justify-center h-90 w-80 ">
+                    class="relative z-10 border-2 border-black rounded-lg p-6 bg-[#181818] flex flex-col gap-1 justify-center h-90 w-80 ">
 
-                    <div class="mt-auto flex w-full justify-center">
-
+                    <div class="mt-auto flex w-full justify-center border-0">
+                        <form action="">
+                            <input id="playlistName" type="text" placeholder="playlist name" class="w-full mb-5 bg-amber-50 text-black border-0 rounded-xl pt-1 pl-2 pb-1 pr-2">
+                            <button id="createPlaylist"
+                                class="text-center w-full h-8 hover:bg-[#27B556] bg-[#27B556]/80 transition-colors delay-100 rounded-4xl text-[14px] font-bold"
+                                type="button">Create playlist</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -82,16 +87,24 @@
             </div>
         </header>
 
-        <main class="flex min-h-0">
+        <main class="flex min-h-0 gap-2">
             <aside
-                class="m-2 w-2xs min-h-0 max-h-[calc(100vh-11rem)] border-0 rounded-2xl bg-[#181818] overflow-y-auto scrollbar scrollbar-w-2 scrollbar-track-[#101010] scrollbar-thumb-amber-50/20 scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-hover:scrollbar-thumb-amber-50/50 scrollbar-active:scrollbar-thumb-amber-50/70">
-                <ul id="playListPlace">
-                    <button type="button" id="addPlaylist">Add Playlist</button>
+                class="m-2 mr-0 w-72 shrink-0 min-h-0 max-h-[calc(100vh-11rem)] rounded-2xl bg-[#181818] overflow-y-auto scrollbar scrollbar-w-2 scrollbar-track-[#101010] scrollbar-thumb-amber-50/20 scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-hover:scrollbar-thumb-amber-50/50 scrollbar-active:scrollbar-thumb-amber-50/70">
+
+                <ul id="playListPlace" class="w-full">
+                    <li class="p-4">
+                        <button
+                            class="text-center w-full h-8 hover:bg-[#27B556]/80 transition-colors delay-100 rounded-4xl text-[14px] font-bold"
+                            type="button" id="addPlaylist">
+                            Add Playlist
+                        </button>
+                    </li>
                 </ul>
             </aside>
+
             <section
-                class="m-2 ml-0 w-full min-h-0 max-h-[calc(100vh-11rem)] border-0 rounded-2xl bg-[#181818] overflow-y-auto scrollbar scrollbar-w-2 scrollbar-track-[#101010] scrollbar-thumb-amber-50/20 scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-hover:scrollbar-thumb-amber-50/50 scrollbar-active:scrollbar-thumb-amber-50/70">
-                <!-- here songs get shown with fetch /getallsongs api -->
+                class="m-2 ml-0 flex-1 min-w-0 min-h-0 max-h-[calc(100vh-11rem)] rounded-2xl bg-[#181818] overflow-y-auto scrollbar scrollbar-w-2 scrollbar-track-[#101010] scrollbar-thumb-amber-50/20 scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-hover:scrollbar-thumb-amber-50/50 scrollbar-active:scrollbar-thumb-amber-50/70">
+
                 <ul id="songsList" class="m-2 pr-2">
                     <!-- songs are added in js -->
                 </ul>
@@ -101,7 +114,8 @@
         <!-- audio player -->
         <footer class="m-2 rounded-2xl border border-white/5 bg-black shadow-2xl shadow-black/40">
             <div class="flex h-full w-full items-center gap-4 rounded-2xl px-4 py-3 bg-[#181818]">
-                <div class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-4xl text-[#28B556]">
+                <div
+                    class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-4xl text-[#28B556]">
                     <img id="songThumbnail" src="assets/noSongThumbnail.png" alt="Song thumbnail"
                         class="h-full w-full object-cover rounded-4xl">
                 </div>
