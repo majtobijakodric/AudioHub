@@ -74,7 +74,7 @@ function addPlaylistToUI(playlists) {
 
     li.classList.add("playlist-item", "w-full", "relative", "px-2", "pb-2");
     playlistButton.type = "button";
-    playlistButton.classList.add("flex", "items-center", "gap-4", "w-full", "rounded-lg", "px-3", "py-2", "text-left", "hover:bg-white/10", "cursor-pointer");
+    playlistButton.classList.add("playlist-select-button", "flex", "items-center", "gap-4", "w-full", "rounded-lg", "px-3", "py-2", "text-left", "hover:bg-white/10", "cursor-pointer");
     playlistImgFrame.classList.add("h-12", "w-12", "shrink-0", "overflow-hidden", "rounded-full");
     playlistImg.classList.add("h-full", "w-full", "object-cover");
     playlistInfo.classList.add("min-w-0", "flex-1", "flex", "flex-col", "items-start", "justify-start", "text-left");
@@ -85,8 +85,12 @@ function addPlaylistToUI(playlists) {
     playlistName.textContent = playlist.name;
 
     // gets all playlists songs and adds them to the selection menu
-    playlistButton.addEventListener("click", () => {
-      putSongOnScrean(getPlaylistSongs(playlist.id));
+    playlistButton.addEventListener("click", async () => {
+      const songs = await getPlaylistSongs(playlist.id);
+      putSongOnScrean(songs);
+      document.querySelectorAll(".playlist-select-button").forEach((button) => {
+        button.classList.remove("bg-white/10");
+      });
       playlistButton.classList.add("bg-white/10");
     });
 
@@ -99,6 +103,7 @@ function addPlaylistToUI(playlists) {
   });
 }
 
+// fetches all the songs in a playlist
 async function getPlaylistSongs(playlistId) {
   try {
     const response = await fetch("/getplaylistsongs", {
