@@ -7,7 +7,7 @@ const playlistDefaultThumbnail = "/assets/noSongThumbnail.png";
 const songAddMenu = document.getElementById("songAddMenu"); // the menu to add a song to a playlist
 const allSongsMenu = document.getElementById("allSongsMenu"); // the form used to add songs to a playlist
 const allSongsList = document.getElementById("allSongsList"); // the scrollable list where all songs will be displayed
-
+const alertBox = document.getElementById("alertBox"); // the box to show alerts to the user
 
 // show the playlist menu
 playlistButton.addEventListener("click", togglePlaylistMenu);
@@ -92,7 +92,6 @@ function addPlaylistToUI(playlists) {
     playlistImg.alt = "playlist cover";
     playlistName.textContent = playlist.name;
     addSongButton.type = "button";
-    addSongButton.setAttribute("aria-label", "Add song to playlist");
 
     // gets all playlists songs and adds them to the selection menu
     playlistButton.addEventListener("click", async () => {
@@ -113,6 +112,7 @@ function addPlaylistToUI(playlists) {
     addSongButton.addEventListener("click", (event) => {
       // stops refreshing the playlist menu when clicking the add song button
       event.stopPropagation();
+      allSongsMenu.dataset.playlistId = playlist.id;
 
       // shows the menu to add songs to the playlist
       if (songAddMenu.classList.contains("hidden")) {
@@ -138,6 +138,49 @@ function addPlaylistToUI(playlists) {
     playListContainer.appendChild(li);
   });
 }
+
+allSongsMenu.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const formData = new FormData(allSongsMenu);
+  const selectedSongIds = formData.getAll("songs");
+  const playlistId = allSongsMenu.dataset.playlistId;
+
+  if (selectedSongIds.length === 0) {
+    alertBox.textContent = "Please select at least one song.";
+    return;
+  }
+
+  if (!playlistId) {
+    alertBox.textContent = "Please choose a playlist first.";
+    return;
+  }
+
+  try {
+    const response = await fetch("/addtoplaylist", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        playlistId: playlistId,
+        songIds: selectedSongIds,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!result.ok || result.success === false) {
+      throw new Error(result.message || "Failed to add songs to playlist");
+    }
+
+    songAddMenu.classList.add("hidden");
+    allSongsMenu.reset();
+  } catch (error) {
+    console.error("Error adding songs to playlist:", error);
+    alertBox.textContent = "Failed to add songs to playlist.";
+  }
+});
 
 // fetches all the songs in a playlist
 async function getPlaylistSongs(playlistId) {
