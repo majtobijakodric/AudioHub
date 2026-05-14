@@ -161,18 +161,7 @@ async function searchBarShow() {
   if (!searchBarPopup) {
     searchBarPopup = document.createElement("div");
     searchBarPopup.id = "searchBarPopup";
-    searchBarPopup.classList.add(
-      "fixed",
-      "z-50",
-      "max-h-80",
-      "overflow-y-auto",
-      "rounded-2xl",
-      "border",
-      "border-white",
-      "bg-[#121212]",
-      "p-2",
-      "shadow-md",
-    );
+    searchBarPopup.classList.add("fixed", "z-50", "max-h-80", "overflow-y-auto", "rounded-2xl", "border-0", "border-black", "bg-[#121212]", "p-2", "shadow-md");
     document.body.appendChild(searchBarPopup);
   }
 
@@ -181,7 +170,7 @@ async function searchBarShow() {
   searchBarPopup.style.width = `${WIDTH}px`;
   showSearchLoading(searchBarPopup);
 
-  // append each song to the search box with no thumbnail just the name
+  // append each song to the search box
   searchSongs(searchInput.value).then((results) => {
     searchBarPopup.textContent = "";
 
@@ -198,36 +187,23 @@ async function searchBarShow() {
 
     results.forEach((song) => {
       const songButton = document.createElement("button");
+      const songImgFrame = document.createElement("div");
+      const songImg = document.createElement("img");
       const songTitle = document.createElement("span");
       const songLoading = document.createElement("img");
       songButton.type = "button";
-      songButton.classList.add(
-        "flex",
-        "w-full",
-        "items-center",
-        "gap-3",
-        "rounded-xl",
-        "border-transparent",
-        "px-4",
-        "py-3",
-        "text-left",
-        "text-sm",
-        "text-amber-50",
-        "hover:bg-white/5",
-        "cursor-pointer",
-      );
+      songButton.classList.add("flex", "w-full", "items-center", "gap-3", "rounded-xl", "border-transparent", "px-4", "py-3", "text-left", "text-sm", "text-amber-50", "hover:bg-white/5", "cursor-pointer");
+      songImgFrame.classList.add("h-11", "w-11", "shrink-0", "overflow-hidden", "rounded-lg");
+      songImg.classList.add("h-full", "w-full", "object-cover");
       songTitle.classList.add("min-w-0", "flex-1", "truncate");
+
+      songImg.src = `https://i.ytimg.com/vi/${song.id}/mqdefault.jpg`;
+      songImg.alt = "song cover";
 
       // gif that will show when the song is being downloaded
       songLoading.src = loadingGif;
       songLoading.alt = "Loading";
-      songLoading.classList.add(
-        "hidden",
-        "h-6",
-        "w-6",
-        "shrink-0",
-        "object-contain",
-      );
+      songLoading.classList.add("hidden", "h-6", "w-6", "shrink-0", "object-contain",);
 
       if (song.title.length > MAX_TITLE_LENGTH) {
         songTitle.textContent = `${song.title.substr(0, MAX_TITLE_LENGTH)}...`;
@@ -235,6 +211,8 @@ async function searchBarShow() {
         songTitle.textContent = song.title;
       }
 
+      songImgFrame.appendChild(songImg);
+      songButton.appendChild(songImgFrame);
       songButton.appendChild(songTitle);
       songButton.appendChild(songLoading);
 
