@@ -2,16 +2,29 @@ const playlistButton = document.getElementById("addPlaylist"); // opens the payl
 const playlistMenu = document.getElementById("playlistMenu"); // the actual playlist menu
 const playlistNameInput = document.getElementById("playlistName"); // the input field for the playlist name
 const createPlaylistButton = document.getElementById("createPlaylist"); // the button to create a new playlist
+const cancelPlaylistMenuButton = document.getElementById("cancelPlaylistMenuButton"); // closes the playlist menu
 const playListContainer = document.getElementById("playListPlace"); // the container where the playlists will be displayed
 const songAddMenu = document.getElementById("songAddMenu"); // the menu to add a song to a playlist
 const allSongsMenu = document.getElementById("allSongsMenu"); // the form used to add songs to a playlist
 const allSongsList = document.getElementById("allSongsList"); // the scrollable list where all songs will be displayed
 const alertBox = document.getElementById("alertBox"); // the box to show alerts to the user
+const cancelSongAddButton = document.getElementById("cancelSongAddButton"); // closes the add song menu
 
 const playlistDefaultThumbnail = "/assets/playlistIcon.png";
 
 // show the playlist menu
 playlistButton.addEventListener("click", togglePlaylistMenu);
+
+cancelPlaylistMenuButton.addEventListener("click", () => {
+  playlistMenu.classList.add("hidden");
+  playlistNameInput.value = "";
+});
+
+cancelSongAddButton.addEventListener("click", () => {
+  songAddMenu.classList.add("hidden");
+  allSongsMenu.reset();
+  alertBox.textContent = "";
+});
 
 // fetch all the playlists and add them to the UI
 getPlaylists().then((playlists) => addPlaylistToUI(playlists));
