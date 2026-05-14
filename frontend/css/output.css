@@ -296,6 +296,9 @@
   .mb-8 {
     margin-bottom: calc(var(--spacing) * 8);
   }
+  .mb-auto {
+    margin-bottom: auto;
+  }
   .ml-0 {
     margin-left: calc(var(--spacing) * 0);
   }
