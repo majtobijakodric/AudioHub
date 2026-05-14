@@ -19,6 +19,8 @@ import {
   getPlayListsSongs,
   getUsersPlaylist,
   createPlaylist,
+  removePlaylist,
+  removeSong,
 } from "./songFunctions";
 import flash from "express-flash"; // used 2x for sending login and registration erros
 import session from "express-session";
@@ -325,6 +327,29 @@ app.get("/getplaylists", checkAuthenticated, async (req: Request, res: Response)
   }
 });
 
+app.post("/removeplaylist", checkAuthenticated, async (req: Request, res: Response) => {
+  const { playlistId } = req.body;
+
+  if (!isString(playlistId) || isEmptyString(playlistId.trim())) {
+    res.status(400).json({ success: false, message: "Missing playlist id" });
+    return;
+  }
+
+  const userId = (req.user as { id: string }).id;
+
+  try {
+    const result = await removePlaylist(playlistId, userId);
+    if (!result) {
+      res.status(404).json({ success: false, message: "Playlist not found" });
+      return;
+    }
+    res.json({ success: true, message: "Playlist removed" });
+  } catch (error) {
+    logWithTime(`[REMOVEPLAYLIST] failed: ${error}`);
+    res.status(500).json({ success: false, message: "Failed to remove playlist" });
+  }
+});
+
 app.post("/getplaylistsongs", checkAuthenticated, async (req: Request, res: Response) => {
   const { playlistId } = req.body;
 
@@ -368,6 +393,68 @@ app.post("/addsongtoplaylist", checkAuthenticated, async (req: Request, res: Res
     res.status(500).json({ success: false, message: "Failed to add songs to playlist" });
   }
 });
+
+app.get("/getusername", checkAuthenticated, (req: Request, res: Response) => {
+  const username = (req.user as { username: string }).username;
+  res.json({ success: true, username });
+});
+
+app.post("/deleteaccount", checkAuthenticated, async (req: Request, res: Response, next: NextFunction) => {
+  const userId = (req.user as { id: string }).id;
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      // delete playlists first so the user can be deleted
+      await tx.playlist.deleteMany({
+        where: { userId: userId },
+      });
+
+      await tx.user.delete({
+        where: { id: userId },
+      });
+    });
+
+    req.logOut(() => {
+      req.session.destroy(() => {
+        res.clearCookie("connect.sid");
+        res.json({ success: true, message: "Account deleted" });
+      });
+    });
+
+  } catch (error) {
+    logWithTime(`[DELETEACCOUNT] failed: ${error}`);
+    res.status(500).json({ success: false, message: "Failed to delete account" });
+  }
+});
+
+app.post("/deletesong", checkAuthenticated, async (req: Request, res: Response) => {
+  const { songId } = req.body;
+
+  if (!isString(songId) || isEmptyString(songId.trim())) {
+    res.status(400).json({ success: false, message: "Missing song id" });
+    return;
+  }
+
+  try {
+    const result = await removeSong(songId);
+
+    if (!result) {
+      res.status(404).json({ success: false, message: "Song not found" });
+      return;
+    }
+
+    if (isDownloaded(songId)) {
+      await unlink(path.join(FOLDER, `${songId}.mp3`));
+    }
+
+    res.json({ success: true, message: "Song deleted" });
+  } catch (error) {
+    logWithTime(`[DELETESONG] failed: ${error}`);
+    res.status(500).json({ success: false, message: "Failed to delete song" });
+  }
+});
+
+
 
 function start() {
   // Optionally use onReady() to get a promise that resolves when store is ready.

@@ -48,6 +48,23 @@ export async function createPlaylist(name: string, userId: string) {
   });
 }
 
+export async function removePlaylist(playlistId: string, userId: string) {
+  const playlist = await prisma.playlist.findFirst({
+    where: {
+      id: playlistId,
+      userId: userId,
+    },
+  });
+
+  if (!playlist) return false;
+
+  return await prisma.playlist.delete({
+    where: {
+      id: playlistId,
+    },
+  });
+}
+
 export async function addSongToPlaylist(songId: string, playlistId: string) {
   if (!(await isInDatabase(songId)) || !isDownloaded(songId)) return false;
 
@@ -61,6 +78,22 @@ export async function addSongToPlaylist(songId: string, playlistId: string) {
           id: songId,
         },
       },
+    },
+  });
+}
+
+export async function removeSong(songId: string) {
+  const song = await prisma.song.findUnique({
+    where: {
+      id: songId,
+    },
+  });
+
+  if (!song) return false;
+
+  return await prisma.song.delete({
+    where: {
+      id: songId,
     },
   });
 }
