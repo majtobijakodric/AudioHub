@@ -12,6 +12,10 @@ const volumeBar = document.getElementById("volumeBar");
 const songThumbnail = document.getElementById("songThumbnail");
 
 let currentObjectUrl;
+let playlistIsSelected = false;
+let selectedPlaylistId = "";
+let currentSongId = "";
+let songQueue = [];
 
 playPauseButton.addEventListener("click", () => {
   if (!audioPlayer.src) {
@@ -47,10 +51,73 @@ volumeBar.addEventListener("input", () => {
 
 audioPlayer.addEventListener("play", updatePlayButton);
 audioPlayer.addEventListener("pause", updatePlayButton);
-audioPlayer.addEventListener("ended", updatePlayButton);
+audioPlayer.addEventListener("ended", autoplayNextSong);
 audioPlayer.addEventListener("loadedmetadata", updateProgress);
 audioPlayer.addEventListener("timeupdate", updateProgress);
 audioPlayer.addEventListener("volumechange", updateVolumeIcon);
+
+// sets which songs autoplay should use
+function setSongsQueue(songs, playlistId = "") {
+  songQueue = Array.isArray(songs) ? songs : [];
+
+  if (playlistId) {
+    setSelectedPlaylist(playlistId);
+    return;
+  }
+
+  clearSelectedPlaylist();
+}
+
+function setSelectedPlaylist(playlistId) {
+  playlistIsSelected = true;
+  selectedPlaylistId = playlistId;
+}
+
+function clearSelectedPlaylist() {
+  playlistIsSelected = false;
+  selectedPlaylistId = "";
+}
+
+// gets the newest songs from a playlist before autoplay
+async function getSongsQueue() {
+  if (playlistIsSelected && selectedPlaylistId) {
+    const songs = await getPlaylistSongs(selectedPlaylistId);
+    songQueue = Array.isArray(songs) ? songs : [];
+    return songQueue;
+  }
+
+  if (songQueue.length === 0) {
+    const songs = await getAllSongs();
+    songQueue = Array.isArray(songs) ? songs : [];
+  }
+
+  return songQueue;
+}
+
+async function autoplayNextSong() {
+  updatePlayButton();
+
+  try {
+    const songs = await getSongsQueue();
+
+    if (!Array.isArray(songs) || songs.length === 0 || !currentSongId) {
+      return;
+    }
+
+    const currentIndex = songs.findIndex((song) => song.id === currentSongId);
+    const nextIndex =
+      currentIndex === -1 ? 0 : (currentIndex + 1) % songs.length;
+    const nextSong = songs[nextIndex];
+
+    if (!nextSong) {
+      return;
+    }
+
+    await playSong(nextSong);
+  } catch (error) {
+    console.error("Autoplay failed:", error);
+  }
+}
 
 function formatPlayerDuration(durationInSeconds) {
   const totalSeconds = Number(durationInSeconds);
@@ -119,6 +186,7 @@ async function playSong(song) {
     return;
   }
 
+  currentSongId = song.id;
   const blob = await res.blob();
   const objectUrl = URL.createObjectURL(blob);
 

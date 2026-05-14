@@ -77,10 +77,11 @@ function formatDuration(durationInSeconds) {
 
 // will be used when you open a playlist
 // is currently used on load to show songs
-async function putSongOnScrean(songs) {
+async function putSongOnScrean(songs, playlistId = "") {
   // songs list = ul
   const songsList = document.getElementById("songsList");
   songsList.textContent = "";
+  setSongsQueue(songs, playlistId);
 
   // makes a div inside <li> to show song contetnt
   songs.forEach((song) => {

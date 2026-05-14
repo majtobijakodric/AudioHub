@@ -102,7 +102,7 @@ function addPlaylistToUI(playlists) {
       const songs = await getPlaylistSongs(playlist.id);
 
       // puts all songs on the menu
-      putSongOnScrean(songs);
+      putSongOnScrean(songs, playlist.id);
 
       // shows which playlist is selected
       document.querySelectorAll(".playlist-select-button").forEach((button) => {
