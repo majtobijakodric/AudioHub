@@ -3,6 +3,7 @@ import fs from "fs";
 import { prisma } from "../lib/prisma";
 import { FOLDER } from ".";
 import { YouTubeSongData } from "./youtube";
+import { logWithTime } from "./helper";
 
 // check if the song is already downloaded
 export function isDownloaded(songId: string): boolean {
@@ -19,6 +20,17 @@ export async function isInDatabase(songId: string) {
   });
 
   return song == null ? false : true;
+}
+
+// removes songs from the database if they are not downloaded (used at start)
+export async function areAllSongsDownloaded() {
+  const songs = await prisma.song.findMany();
+
+  for (const song of songs) {
+    if (!fs.existsSync(song.diskPath)) {
+      await removeSong(song.id);
+    }
+  }
 }
 
 export async function addSongToDatabase(songData: YouTubeSongData) {
@@ -91,11 +103,14 @@ export async function removeSong(songId: string) {
 
   if (!song) return false;
 
-  return await prisma.song.delete({
+  const x = await prisma.song.delete({
     where: {
       id: songId,
     },
   });
+  logWithTime(`[REMOVESONG] Deleted song ${songId} from database`);
+
+  return x;
 }
 
 export async function getPlayListsSongs(playlistId: string) {

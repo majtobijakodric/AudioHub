@@ -11,17 +11,7 @@ import {
   YouTubeSongData,
 } from "./youtube";
 import express, { NextFunction, request, Request, Response } from "express";
-import {
-  addSongToDatabase,
-  isDownloaded,
-  isInDatabase,
-  addSongToPlaylist,
-  getPlayListsSongs,
-  getUsersPlaylist,
-  createPlaylist,
-  removePlaylist,
-  removeSong,
-} from "./songFunctions";
+import { addSongToDatabase, isDownloaded, isInDatabase, addSongToPlaylist, getPlayListsSongs, getUsersPlaylist, createPlaylist, removePlaylist, removeSong, areAllSongsDownloaded } from "./songFunctions";
 import flash from "express-flash"; // used 2x for sending login and registration erros
 import session from "express-session";
 import MySQLStore from "express-mysql-session"; // for storing sessions in the db
@@ -460,14 +450,19 @@ function start() {
   // Optionally use onReady() to get a promise that resolves when store is ready.
   sessionStore.onReady().then(() => {
     // MySQL session store ready for use.
+
+    areAllSongsDownloaded().then(() => {
+      logWithTime("[SONGS] all songs in the database are downloaded");
+    });
+
     // 0.0.0.0 for listening on all IPv4
     app.listen(PORT, "0.0.0.0", () =>
       logWithTime(`[SERVER] listening on port http://localhost:${PORT}`),
     );
-  })
-    .catch((error) => {
-      logWithTime(`${error}`);
-    });
+
+  }).catch((error) => {
+    logWithTime(`${error}`);
+  });
 }
 
 // call the start functon to start it all
