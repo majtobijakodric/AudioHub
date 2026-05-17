@@ -80,6 +80,7 @@ export async function getUserSongs(userId: string) {
     },
   });
 
+  // only return the actual songs
   return userSongs.map((userSong) => userSong.song);
 }
 

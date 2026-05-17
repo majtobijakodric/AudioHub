@@ -56,8 +56,7 @@ app.set("views", path.join(__dirname, "../frontend"));
 // so you can use css in html
 app.use(express.static(path.join(__dirname, "../frontend")));
 
-// so you can see icons in html
-// I don't think I use this anymore
+// so you can see fontawesome icons in html
 app.use("/fontawesome", express.static(path.join(__dirname, "../node_modules/@fortawesome/fontawesome-free")));
 
 // midleware used for logging all request with path and ip

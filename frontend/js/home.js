@@ -4,6 +4,7 @@ const searchBar = document.getElementById("searchBar");
 const searchInput = document.getElementById("search");
 
 const TIME_OUT_TIME = 400; // keystroke timeout
+const MAX_TITLE_LENGTH = 50; // Maximum title length before truncation
 
 let searchTimeout;
 
@@ -183,7 +184,6 @@ async function searchBarShow() {
       return;
     }
 
-    const MAX_TITLE_LENGTH = 50; // Maximum title length before truncation
 
     results.forEach((song) => {
       const songButton = document.createElement("button");
@@ -226,9 +226,6 @@ async function searchBarShow() {
         songButton.classList.add("opacity-50", "cursor-not-allowed");
         songLoading.classList.remove("hidden");
 
-        console.log(song.url);
-        
-
         try {
           const res = await fetch("/downloadsong", {
             method: "POST",
@@ -244,7 +241,10 @@ async function searchBarShow() {
             const data = await res.json(); // parse the response
             console.log(data);
             hideSearchBar();
-            getAllSongs().then((songs) => putSongOnScrean(songs)); // refresh the songs on screan
+            getAllSongs().then((songs) => {
+              putSongOnScrean(songs); // refresh the songs on screan
+              playSong(song); // play the song
+            });
           } else {
             console.log("Failed to download song");
           }
@@ -275,7 +275,6 @@ async function searchSongs(songName) {
         "Content-type": "application/json; charset=UTF-8",
       },
     });
-    console.log("Hi");
 
     const data = await res.json(); // parse the response
     console.log(data);

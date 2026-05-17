@@ -1,6 +1,8 @@
 const audioPlayer = document.getElementById("audioPlayer");
+const previousSongButton = document.getElementById("previousSongButton");
 const playPauseButton = document.getElementById("playPauseButton");
 const playPauseIcon = document.getElementById("playPauseIcon");
+const nextSongButton = document.getElementById("nextSongButton");
 const progressBar = document.getElementById("progressBar");
 const currentTime = document.getElementById("currentTime");
 const durationTime = document.getElementById("durationTime");
@@ -28,6 +30,9 @@ playPauseButton.addEventListener("click", () => {
     audioPlayer.pause();
   }
 });
+
+previousSongButton.addEventListener("click", playPreviousSong);
+nextSongButton.addEventListener("click", autoplayNextSong);
 
 progressBar.addEventListener("input", () => {
   if (!Number.isFinite(audioPlayer.duration) || audioPlayer.duration <= 0) {
@@ -119,6 +124,30 @@ async function autoplayNextSong() {
   }
 }
 
+// get the previous song in the que
+async function playPreviousSong() {
+  try {
+    const songs = await getSongsQueue();
+
+    if (!Array.isArray(songs) || songs.length === 0 || !currentSongId) {
+      return;
+    }
+
+    const currentIndex = songs.findIndex((song) => song.id === currentSongId);
+    const previousIndex =
+      currentIndex === -1 ? 0 : (currentIndex - 1 + songs.length) % songs.length;
+    const previousSong = songs[previousIndex];
+
+    if (!previousSong) {
+      return;
+    }
+
+    await playSong(previousSong);
+  } catch (error) {
+    console.error("Previous song failed:", error);
+  }
+}
+
 function formatPlayerDuration(durationInSeconds) {
   const totalSeconds = Number(durationInSeconds);
 
@@ -156,11 +185,7 @@ function updateProgress() {
 }
 
 function updateVolumeIcon() {
-  volumeIcon.classList.remove(
-    "fa-volume-high",
-    "fa-volume-low",
-    "fa-volume-xmark",
-  );
+  volumeIcon.classList.remove("fa-volume-high", "fa-volume-low", "fa-volume-xmark",);
 
   if (audioPlayer.muted || audioPlayer.volume === 0) {
     volumeIcon.classList.add("fa-volume-xmark");
