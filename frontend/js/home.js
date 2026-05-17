@@ -226,6 +226,9 @@ async function searchBarShow() {
         songButton.classList.add("opacity-50", "cursor-not-allowed");
         songLoading.classList.remove("hidden");
 
+        console.log(song.url);
+        
+
         try {
           const res = await fetch("/downloadsong", {
             method: "POST",

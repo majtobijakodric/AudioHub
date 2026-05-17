@@ -9,9 +9,10 @@ import passport from "passport"; // auth
 import { logRequest, logWithTime } from "./helper"; // request loggin midleware
 import rootRouter from "./routes";
 
+export const FOLDER = "data/songs"; // songs are stored here
+
 const app = express();
 const PORT = Number(process.env.PORT) || 8080; // set the port in .env
-export const FOLDER = "data/songs"; // songs are stored here
 
 const MySQLSessionStore = MySQLStore(session);
 

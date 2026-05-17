@@ -2,7 +2,6 @@ import express, { NextFunction, Request, Response } from "express";
 import passport from "passport";
 import { createUser, checkNotAuthenticated, checkAuthenticated, } from "../auth";
 import { isString, isEmptyString, logWithTime, logRequest } from "../helper";
-import { searchYouTubeSong } from "../youtube";
 
 const authRouter = express.Router();
 
