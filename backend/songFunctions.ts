@@ -51,6 +51,38 @@ export async function addSongToDatabase(songData: YouTubeSongData) {
   return song;
 }
 
+export async function addSongToUser(userId: string, songId: string) {
+  return await prisma.userSong.upsert({ // upsert creates data if it doesn't exit or update if it does
+    where: {
+      userId_songId: {
+        userId: userId,
+        songId: songId,
+      },
+    },
+    update: {},
+    create: {
+      userId: userId,
+      songId: songId,
+    },
+  });
+}
+
+export async function getUserSongs(userId: string) {
+  const userSongs = await prisma.userSong.findMany({
+    where: {
+      userId: userId,
+    },
+    include: {
+      song: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return userSongs.map((userSong) => userSong.song);
+}
+
 export async function createPlaylist(name: string, userId: string) {
   return await prisma.playlist.create({
     data: {

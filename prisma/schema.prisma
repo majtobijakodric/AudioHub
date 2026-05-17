@@ -9,10 +9,11 @@ datasource db {
 }
 
 model User {
-  id             String @id @default(uuid())
-  username       String @unique
+  id             String     @id @default(uuid())
+  username       String     @unique
   hashedPassword String
   playlists      Playlist[] // one user can have many playlists
+  songs          UserSong[]
 }
 
 model Song {
@@ -23,16 +24,29 @@ model Song {
   thumbnailURL String
   diskPath     String
   url          String
-  uploadDate   DateTime @default(now())
   createdAt    DateTime @default(now()) // for sorting songs by upload date
-  playlists    Playlist[] @relation("PlaylistSongs")
+
+  userSongs UserSong[]
+  playlists Playlist[] @relation("PlaylistSongs")
 }
 
 model Playlist {
-  id     String @id @default(uuid())
-  name   String
-  userId String
+  id        String   @id @default(uuid())
+  name      String
+  userId    String
   createdAt DateTime @default(now()) // for sorting playlists by creation date
-  user   User   @relation(fields: [userId], references: [id])
-  songs  Song[] @relation("PlaylistSongs") 
+  user      User     @relation(fields: [userId], references: [id])
+  songs     Song[]   @relation("PlaylistSongs")
+}
+
+model UserSong {
+  id        String   @id @default(uuid())
+  userId    String
+  songId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  song Song @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, songId])
 }

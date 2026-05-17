@@ -54,11 +54,7 @@ const toSongData = (item: any): YouTubeSongData => {
   };
 };
 
-export async function searchYouTubeSong({
-  name,
-  limit = 5,
-  fast = false,
-}: SearchSongParams): Promise<YouTubeSongData[]> {
+export async function searchYouTubeSong({ name, limit = 5, fast = false, }: SearchSongParams): Promise<YouTubeSongData[]> {
   // return if name missing
   if (!name?.trim()) {
     throw new Error("Song name is required.");

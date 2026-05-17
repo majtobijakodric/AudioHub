@@ -11,7 +11,7 @@ import {
   YouTubeSongData,
 } from "./youtube";
 import express, { NextFunction, request, Request, Response } from "express";
-import { addSongToDatabase, isDownloaded, isInDatabase, addSongToPlaylist, getPlayListsSongs, getUsersPlaylist, createPlaylist, removePlaylist, removeSong, areAllSongsDownloaded } from "./songFunctions";
+import { addSongToDatabase, addSongToUser, getUserSongs, isDownloaded, isInDatabase, addSongToPlaylist, getPlayListsSongs, getUsersPlaylist, createPlaylist, removePlaylist, removeSong, areAllSongsDownloaded } from "./songFunctions";
 import flash from "express-flash"; // used 2x for sending login and registration erros
 import session from "express-session";
 import MySQLStore from "express-mysql-session"; // for storing sessions in the db
@@ -193,7 +193,8 @@ app.post("/ytsearch", checkAuthenticated, async (req: Request, res: Response) =>
 
 app.post("/downloadsong", checkAuthenticated, async (req: Request, res: Response) => {
   try {
-    const url = req.body.url;
+    const { url } = req.body.url;
+    const userId = (req.user as { id: string }).id;
     logWithTime(`[YTDOWNLOAD] starting downloading song: ${url}`);
 
     if (!isString(url) || isEmptyString(url)) {
@@ -212,21 +213,29 @@ app.post("/downloadsong", checkAuthenticated, async (req: Request, res: Response
 
     const song = songData[0]; // searchYouTubeSong reutrn an array even if you specify for one song
 
-    // check if the song already exists
-    if (isDownloaded(song.id) || (await isInDatabase(song.id))) {
-      res.json({
-        success: false,
-        message: "This song is already downloaded",
-      });
+    const songIsInDatabase = await isInDatabase(song.id);
+    const songIsDownloaded = isDownloaded(song.id);
+
+    // if the song is alredy here, just adds it to him
+    if (songIsInDatabase && songIsDownloaded) {
+      await addSongToUser(userId, song.id);
+      res.json({ success: true, message: "Song added to your library" });
       return;
     }
 
-    await downloadYouTubeSong(url, FOLDER, song.id, true);
+    if (!songIsDownloaded) {
+      await downloadYouTubeSong(url, FOLDER, song.id, true);
+    }
 
     try {
-      await addSongToDatabase(song);
+      if (!songIsInDatabase) {
+        await addSongToDatabase(song);
+      }
+      await addSongToUser(userId, song.id);
     } catch (error) {
-      await unlink(path.join(FOLDER, `${song.id}.mp3`)); // remove song file if there was an error adding songs info to the databse
+      if (!songIsDownloaded && isDownloaded(song.id)) {
+        await unlink(path.join(FOLDER, `${song.id}.mp3`)); // remove song file if there was an error adding songs info to the databse
+      }
       throw error;
     }
 
@@ -245,8 +254,9 @@ app.post("/downloadsong", checkAuthenticated, async (req: Request, res: Response
 app.get("/getallsongs", checkAuthenticated, async (req: Request, res: Response) => {
   // this is used at start to fetch all songs
   try {
+    const userId = (req.user as { id: string }).id;
     logWithTime("[ALLSONGS] getallsongs api called");
-    const songs = await prisma.song.findMany();
+    const songs = await getUserSongs(userId);
     res.send({ success: true, songs });
   } catch (error) {
     logWithTime(
