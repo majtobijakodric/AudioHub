@@ -8,7 +8,7 @@
     "prisma-migrate-generate": "npx prisma migrate dev && npx prisma generate",
     "gen-tailwind": "npx @tailwindcss/cli -i ./frontend/css/style.css -o ./frontend/css/output.css --watch",
     "build": "npx prisma generate && npx tsc",
-    "start": "node dist/backend/index.js"
+    "start": "npx prisma db push && node dist/backend/index.js"
   },
   "keywords": [],
   "author": "",
