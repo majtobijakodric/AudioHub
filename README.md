@@ -13,7 +13,7 @@ AudioHub is a local music library app where users can search YouTube songs, down
 ### 1. Clone the project
 
 ```powershell
-git clone <repo-url>
+git clone https://github.com/majtobijakodric/audiohub.git
 cd audiohub
 ```
 
