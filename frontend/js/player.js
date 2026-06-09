@@ -13,10 +13,12 @@ const volumeIcon = document.getElementById("volumeIcon");
 const volumeBar = document.getElementById("volumeBar");
 const songThumbnail = document.getElementById("songThumbnail");
 
+const defaultDocumentTitle = document.title;
 let currentObjectUrl;
 let playlistIsSelected = false;
 let selectedPlaylistId = "";
 let currentSongId = "";
+let currentSongTitle = "";
 let songQueue = [];
 
 playPauseButton.addEventListener("click", () => {
@@ -54,8 +56,8 @@ volumeBar.addEventListener("input", () => {
   updateVolumeIcon();
 });
 
-audioPlayer.addEventListener("play", updatePlayButton);
-audioPlayer.addEventListener("pause", updatePlayButton);
+audioPlayer.addEventListener("play", updatePlayerState);
+audioPlayer.addEventListener("pause", updatePlayerState);
 audioPlayer.addEventListener("ended", autoplayNextSong);
 audioPlayer.addEventListener("loadedmetadata", updateProgress);
 audioPlayer.addEventListener("timeupdate", updateProgress);
@@ -172,6 +174,16 @@ function updatePlayButton() {
   );
 }
 
+function updateDocumentTitle() {
+  document.title =
+    !audioPlayer.paused && currentSongTitle ? currentSongTitle : defaultDocumentTitle;
+}
+
+function updatePlayerState() {
+  updatePlayButton();
+  updateDocumentTitle();
+}
+
 function updateProgress() {
   currentTime.textContent = formatPlayerDuration(audioPlayer.currentTime);
   durationTime.textContent = formatPlayerDuration(audioPlayer.duration);
@@ -212,6 +224,7 @@ async function playSong(song) {
   }
 
   currentSongId = song.id;
+  currentSongTitle = song.title;
   const blob = await res.blob();
   const objectUrl = URL.createObjectURL(blob);
 
