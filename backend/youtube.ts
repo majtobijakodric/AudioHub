@@ -100,10 +100,11 @@ export async function downloadYouTubeSong(
   await mkdir(folder, { recursive: true });
 
   const audioFormat = "mp3";
-  const options: Parameters<typeof ytdlpExec>[1] = {
+  const options: NonNullable<Parameters<typeof ytdlpExec>[1]> = {
     noWarnings: true,
     extractAudio: true,
     audioFormat: audioFormat,
+    audioQuality: 5,
     output: path.join(folder, `${songid}.${audioFormat}`),
   };
 
