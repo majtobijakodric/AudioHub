@@ -2,7 +2,7 @@ import { unlink } from "fs";
 import path from "path";
 import { checkAuthenticated } from "../auth";
 import { isString, isEmptyString, logWithTime } from "../helper";
-import { removeSong, isDownloaded, getUserSongs, isInDatabase, addSongToDatabase, addSongToUser } from "../songFunctions";
+import { removeSong, isDownloaded, getUserSongs, isInDatabase, addSongToDatabase, addSongToUser, removeSongFromUser } from "../songFunctions";
 import express, { Request, Response } from "express";
 import { YouTubeSongData, searchYouTubeSong, downloadYouTubeSong } from "../youtube";
 import youtubeRouter from "./youtube";
@@ -11,30 +11,31 @@ import { FOLDER } from "..";
 const songsRouter = express.Router();
 
 songsRouter.post("/deletesong", checkAuthenticated, async (req: Request, res: Response) => {
-    const { songId } = req.body;
+  const { songId } = req.body;
 
-    if (!isString(songId) || isEmptyString(songId.trim())) {
-        res.status(400).json({ success: false, message: "Missing song id" });
-        return;
+  if (!isString(songId) || isEmptyString(songId.trim())) {
+    res.status(400).json({ success: false, message: "Missing song id" });
+    return;
+  }
+
+  try {
+    const userId = (req.user as { id: string }).id;
+    const result = await removeSongFromUser(userId, songId);
+
+    if (!result) {
+      res.status(404).json({ success: false, message: "Song not found" });
+      return;
     }
 
-    try {
-        const result = await removeSong(songId);
-
-        if (!result) {
-            res.status(404).json({ success: false, message: "Song not found" });
-            return;
-        }
-
-        if (isDownloaded(songId)) {
-            unlink(path.join(FOLDER, `${songId}.mp3`), (error) => { });
-        }
-
-        res.json({ success: true, message: "Song deleted" });
-    } catch (error) {
-        logWithTime(`[DELETESONG] failed: ${error}`);
-        res.status(500).json({ success: false, message: "Failed to delete song" });
+    if (result.fileRemoved && isDownloaded(songId)) {
+      unlink(path.join(FOLDER, `${songId}.mp3`), () => {});
     }
+
+    res.json({ success: true, message: "Song deleted" });
+  } catch (error) {
+    logWithTime(`[DELETESONG] failed: ${error}`);
+    res.status(500).json({ success: false, message: "Failed to delete song" });
+  }
 });
 
 songsRouter.get("/getallsongs", checkAuthenticated, async (req: Request, res: Response) => {

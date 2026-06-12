@@ -176,3 +176,25 @@ export async function getUsersPlaylist(userId: string) {
     },
   });
 }
+
+export async function removeSongFromUser(userId: string, songId: string) {
+  const deleted = await prisma.userSong.deleteMany({
+    where: {
+      userId: userId,
+      songId: songId,
+    },
+  });
+
+  if (deleted.count === 0) return false;
+
+  const remaining = await prisma.userSong.count({
+    where: { songId: songId },
+  });
+
+  if (remaining === 0) {
+    await removeSong(songId);
+    return { deleted: true, fileRemoved: true };
+  }
+
+  return { deleted: true, fileRemoved: false };
+}
